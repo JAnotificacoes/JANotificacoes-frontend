@@ -1,10 +1,43 @@
 @import "tailwindcss";
 
+/* ========= Design tokens base ========= */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Tema padrão (fallback) – dark azul */
+  --background: #020617;
+  /* fundo geral bem escuro */
+  --foreground: #e5e7eb;
+  /* texto padrão */
+
+  /* Superfícies e bordas */
+  --color-surface: #020617;
+  /* bg principal */
+  --color-surface-elevated: #020617;
+  /* se quiser cards mais claros */
+  --color-border: #1f2937;
+
+  /* Azul principal (primary) */
+  --color-primary: #93add68f;
+  /* azul vibrante */
+  --color-primary-soft: #8ca4ccd5;
+  /* variação para hover/estado ativo */
+
+  /* Texto */
+  --color-text-primary: #e5e7eb;
+  --color-text-secondary: #9ca3af;
+  --color-text-muted: #6b7280;
+
+  /* Estados */
+  --color-error: #b91c1c;
+  --color-error-subtle: #451a1f;
+  --color-success: #15803d;
+  --color-success-subtle: #093b1b;
+  --color-pending: #a16207;
+  --color-pending-subtle: #553304;
+  ;
 }
 
+/* Integração com Tailwind via @theme */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -12,12 +45,70 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
+/* ========= Light/Dark (preferência do SO) ========= */
+
+@media (prefers-color-scheme: light) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* Você pode deixar o foco no dark e só dar um light neutro simples */
+    --background: #f9fafb;
+    --foreground: #111827;
+
+    --color-surface: #ffffff;
+    --color-surface-elevated: #f9fafb;
+    --color-border: #e5e7eb;
+
+    --color-primary: #93add68f;
+    /* azul vibrante */
+    --color-primary-soft: #8ca4ccd5;
+    /* variação para hover/estado ativo */
+
+    --color-text-primary: #111827;
+    --color-text-secondary: #4b5563;
+    --color-text-muted: #6b7280;
+
+    --color-error: #ef4444;
+    --color-error-subtle: #fee2e2;
+    --color-success: #15803d;
+    --color-success-subtle: #093b1b;
+    --color-pending: #a16207;
+    --color-pending-subtle: #553304;
+    ;
   }
 }
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Dark azul ao estilo dashboards modernos (bem perto do que vc monta no Realtime Colors) */
+    --background: #020617;
+    /* slate-950 */
+    --foreground: #e5e7eb;
+    /* slate-200 */
+
+    --color-surface: #020617;
+    /* fundo de cards/tabelas */
+    --color-surface-elevated: #020617;
+    --color-border: #1f2937;
+    /* slate-800 */
+
+    --color-primary: #8ca4ccd5;
+    /* blue-500 */
+    --color-primary-soft: #93add68f;
+    /* blue-700 para hover */
+
+    --color-text-primary: #e5e7eb;
+    --color-text-secondary: #9ca3af;
+    --color-text-muted: #6b7280;
+
+    --color-error: #f97373;
+    --color-error-subtle: #451a1f;
+    --color-success: #15803d;
+    --color-success-subtle: #093b1b;
+    --color-pending: #a16207;
+    --color-pending-subtle: #553304;
+  }
+}
+
+/* ========= Body ========= */
 
 body {
   background: var(--background);
