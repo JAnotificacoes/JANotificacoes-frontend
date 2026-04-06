@@ -1,0 +1,45 @@
+.container {
+  border-radius: 12px;
+  border: 1px solid;
+  padding: 20px;
+}
+
+.container:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.value {
+  font-size: 1.875rem;
+  font-weight: bold;
+  font-family: monospace;
+}
+
+.title {
+  font-size: 0.875rem;
+  margin-top: 4px;
+}
+
+/* cores */
+.blue {
+  color: var(--color-primary);
+  background-color: var(--color-primary-soft);
+  border-color: var(--color-border);;
+}
+
+.red {
+  color: var(--color-error);
+  background-color: var(--color-error-subtle);
+  border-color: var(--color-border);;
+}
+
+.green {
+  color: var(--color-success);
+  background-color: var(--color-success-subtle);
+  border-color: var(--color-border);
+}
+
+.yellow {
+  color: var(--color-pending);
+  background-color: var(--color-pending-subtle);
+  border-color: var(--color-border);
+}
