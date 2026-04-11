@@ -33,7 +33,7 @@ export default function DashboardPage() {
     { key: "notification_time", label: "Horário" },
     {
       key: "action",
-      label: "",
+      label: "Notificar manualmente",
       render: (row) => (
         <button
           onClick={() => notify(row.absence_id)}
