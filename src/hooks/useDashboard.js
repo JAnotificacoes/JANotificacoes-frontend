@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { fetchTodayAbsences, triggerScan, sendManualNotification } from "@/services/api";
+import { fetchTodayAbsences, triggerScan, triggerCancel, sendManualNotification } from "@/services/api";
 
 export function useDashboard() {
   const [data, setData] = useState(null);
@@ -19,9 +19,10 @@ export function useDashboard() {
     }
   }, []);
 
-  const scan = useCallback(async () => {
+  const scanAndCancel = useCallback(async () => {
     try {
       setScanning(true);
+      await triggerCancel();
       await triggerScan();
       await load();
     } catch (err) {
@@ -31,9 +32,8 @@ export function useDashboard() {
     }
   }, [load]);
 
-  // Executa scan + load na montagem
   useEffect(() => {
-    scan();
+    scanAndCancel();
   }, []);
 
   const notify = useCallback(async (absenceId) => {
@@ -45,5 +45,5 @@ export function useDashboard() {
     }
   }, [load]);
 
-  return { data, loading, error, scanning, scan, notify, reload: load };
+  return { data, loading, error, scanning, scan: scanAndCancel, notify, reload: load };
 }

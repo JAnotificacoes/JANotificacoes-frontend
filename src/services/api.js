@@ -14,6 +14,12 @@ export async function triggerScan() {
   return res.json();
 }
 
+export async function triggerCancel() {
+  const res = await fetch(`${API_URL}/absences/cancel`, { method: "POST" });
+  if (!res.ok) throw new Error("Failed to trigger cancel");
+  return res.json();
+}
+
 export async function sendManualNotification(absenceId) {
   const res = await fetch(`${API_URL}/absences/${absenceId}/notify`, {
     method: "POST",
@@ -40,5 +46,24 @@ export async function fetchHistory(params = {}) {
 export async function fetchStatus() {
   const res = await fetch(`${API_URL}/settings/status`);
   if (!res.ok) throw new Error("Failed to fetch status");
+  return res.json();
+}
+
+export async function fetchTemplate() {
+  const res = await fetch(`${API_URL}/settings/template`);
+  if (!res.ok) throw new Error("Failed to fetch template");
+  return res.json();
+}
+
+export async function saveTemplate(template) {
+  const res = await fetch(`${API_URL}/settings/template`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ template }),
+  });
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.detail || "Failed to save template");
+  }
   return res.json();
 }
