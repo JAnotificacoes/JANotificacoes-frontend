@@ -6,7 +6,7 @@ import { Table } from "@/components/ui/Table";
 import styles from "./history.module.css";
 
 export default function HistoryPage() {
-  const { data, loading, error, filters, updateFilter, resetFilters } = useHistory();
+  const { data, loading, error, filters, updateFilter, resetFilters, page, setPage } = useHistory();
 
   const columns = [
     { key: "student_name", label: "Aluno" },
@@ -23,12 +23,12 @@ export default function HistoryPage() {
       render: (row) =>
         row.origin ? <Badge status={row.origin} /> : "—",
     },
-    { key: "timestamp", label: "Horário do envio" },
+    { key: "sent_at", label: "Horário do envio" },
     {
-      key: "error_message",
+      key: "error",
       label: "Erro",
-      render: (row) => row.error_message
-        ? <span className={styles.errorMessage}>{row.error_message}</span>
+      render: (row) => row.error
+        ? <span className={styles.errorMessage}>{row.error}</span>
         : "—",
     },
   ];
@@ -98,16 +98,39 @@ export default function HistoryPage() {
           <div className={styles.tableHeader}>
             <h2 className={styles.tableTitle}>Histórico de notificações</h2>
             <span className={styles.tableCount}>
-              {data?.length ?? 0} registros
+              {data.total ?? 0} registros
             </span>
           </div>
           <Table
             columns={columns}
-            data={data}
+            data={data.items}
             loading={loading}
             empty="Nenhuma notificação encontrada para os filtros selecionados."
           />
         </div>
+
+        {/* Paginação */}
+        {data.pages > 1 && (
+          <div className={styles.pagination}>
+            <button
+              className={styles.pageButton}
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={page === 1}
+            >
+              Anterior
+            </button>
+            <span className={styles.pageInfo}>
+              Página {page} de {data.pages}
+            </span>
+            <button
+              className={styles.pageButton}
+              onClick={() => setPage((p) => Math.min(data.pages, p + 1))}
+              disabled={page === data.pages}
+            >
+              Próxima
+            </button>
+          </div>
+        )}
 
         {error && (
           <p className={styles.error}>Erro ao carregar histórico: {error}</p>
