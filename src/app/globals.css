@@ -57,9 +57,9 @@
     --color-surface-elevated: #f9fafb;
     --color-border: #e5e7eb;
 
-    --color-primary: #93add68f;
+    --color-primary: #48659246;
     /* azul vibrante */
-    --color-primary-soft: #8ca4ccd5;
+    --color-primary-soft: #e3edff;
     /* variação para hover/estado ativo */
 
     --color-text-primary: #111827;
@@ -68,8 +68,8 @@
 
     --color-error: #ef4444;
     --color-error-subtle: #fee2e2;
-    --color-success: #15803d;
-    --color-success-subtle: #093b1b;
+    --color-success: #0d42218a;
+    --color-success-subtle: #84bb99;
     --color-pending: #a16207;
     --color-pending-subtle: #553304;
     ;
@@ -78,7 +78,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    /* Dark azul ao estilo dashboards modernos (bem perto do que vc monta no Realtime Colors) */
+    /* Dark azul ao estilo dashboards modernos
     --background: #020617;
     /* slate-950 */
     --foreground: #e5e7eb;
