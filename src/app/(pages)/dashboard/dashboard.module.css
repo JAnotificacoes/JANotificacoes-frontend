@@ -30,7 +30,7 @@
 .date {
   font-size: 0.875rem;
   color: var(--color-text-secondary);              
-  margin-bottom: 16px;
+  margin-bottom: 1rem;
 }
 
 /* grid cards */
@@ -38,19 +38,19 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 16px;
-  margin-bottom: 24px;
+  margin-bottom: 1.5rem;
 }
 
 /* container tabela */
 .tableContainer {
   background-color: var(--color-surface);          
-  border-radius: 12px;
+  border-radius: 0.75rem;
   border: 1px solid var(--color-border);
 }
 
 /* header da tabela */
 .tableHeader {
-  padding: 16px 20px;
+  padding: 1rem 1.25rem;
   border-bottom: 1px solid var(--color-border);
   display: flex;
   align-items: center;
@@ -82,7 +82,7 @@
 
 /* erro */
 .error {
-  margin-top: 16px;
+  margin-top: 1rem;
   font-size: 0.875rem;
   color: var(--color-error);
 }

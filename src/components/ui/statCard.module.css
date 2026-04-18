@@ -1,7 +1,7 @@
 .container {
-  border-radius: 12px;
+  border-radius: 0.75rem;
   border: 1px solid;
-  padding: 20px;
+  padding: 1.25rem;
 }
 
 .container:hover {
