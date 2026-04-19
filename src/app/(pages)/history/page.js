@@ -20,8 +20,7 @@ export default function HistoryPage() {
     {
       key: "origin",
       label: "Origem",
-      render: (row) =>
-        row.origin ? <Badge status={row.origin} /> : "—",
+      render: (row) => row.origin ? <Badge status={row.origin} /> : "—",
     },
     { key: "sent_at", label: "Horário do envio" },
     {
@@ -41,6 +40,7 @@ export default function HistoryPage() {
 
         {/* Filtros */}
         <div className={styles.filters}>
+
           <div className={styles.filterGroup}>
             <label className={styles.label}>De</label>
             <input
@@ -62,14 +62,31 @@ export default function HistoryPage() {
           </div>
 
           <div className={styles.filterGroup}>
+            <label className={styles.label}>Ano</label>
+            <select
+              className={styles.select}
+              value={filters.school_year}
+              onChange={(e) => updateFilter("school_year", e.target.value)}
+            >
+              <option value="">Todos</option>
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((y) => (
+                <option key={y} value={String(y)}>{y}º Ano</option>
+              ))}
+            </select>
+          </div>
+
+          <div className={styles.filterGroup}>
             <label className={styles.label}>Turma</label>
-            <input
-              type="text"
-              className={styles.input}
-              placeholder="Ex: 6A"
+            <select
+              className={styles.select}
               value={filters.classroom}
               onChange={(e) => updateFilter("classroom", e.target.value)}
-            />
+            >
+              <option value="">Todas</option>
+              {["A", "B", "C", "D"].map((l) => (
+                <option key={l} value={l}>{l}</option>
+              ))}
+            </select>
           </div>
 
           <div className={styles.filterGroup}>
@@ -91,6 +108,7 @@ export default function HistoryPage() {
               Limpar filtros
             </button>
           )}
+
         </div>
 
         {/* Tabela */}

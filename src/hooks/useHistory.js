@@ -11,6 +11,7 @@ export function useHistory() {
   const [filters, setFilters] = useState({
     date_from: "",
     date_to:   "",
+    school_year: "",
     classroom: "",
     status:    "",
   });
@@ -40,7 +41,7 @@ export function useHistory() {
   }, []);
 
   const resetFilters = useCallback(() => {
-    setFilters({ date_from: "", date_to: "", classroom: "", status: "" });
+    setFilters({ date_from: "", date_to: "", school_year: "", classroom: "", status: "" });
     setPage(1);
   }, []);
 
