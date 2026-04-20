@@ -37,7 +37,7 @@ export default function DashboardPage() {
       render: (row) => (
         <button
           onClick={() => notify(row.absence_id)}
-          className={styles.notifyButton}
+          className={styles.actionButton}
         >
           Notificar
         </button>
