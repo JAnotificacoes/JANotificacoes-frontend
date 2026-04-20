@@ -83,7 +83,7 @@ export default function HistoryPage() {
               onChange={(e) => updateFilter("classroom", e.target.value)}
             >
               <option value="">Todas</option>
-              {["A", "B", "C", "D"].map((l) => (
+              {["A", "B"].map((l) => (
                 <option key={l} value={l}>{l}</option>
               ))}
             </select>
