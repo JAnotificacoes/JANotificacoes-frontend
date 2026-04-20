@@ -7,7 +7,7 @@ import styles from "./header.module.css";
 const pageTitles = {
   "/dashboard": {
     title: "Dashboard",
-    subtitle: "Acompanhe as faltas e notificações do dia",
+    subtitle: "Acompanhe as faltas do dia",
   },
   "/history": {
     title: "Histórico",
