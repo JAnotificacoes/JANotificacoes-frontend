@@ -52,7 +52,7 @@ export default function AboutPage() {
                     <span className={styles.cardIcon}>👨‍💻</span>
                     <h2 className={styles.cardTitle}>O desenvolvedor</h2>
                     <p className={styles.cardText}>
-                        <strong>Breno</strong> é ex-aluno da Escola João Alves e tinha 17 anos
+                        <strong>Breno Valentim</strong> é ex-aluno da Escola João Alves e tinha 17 anos
                         quando desenvolveu este projeto. Na época, cursava Desenvolvimento de
                         Sistemas no <strong>Centro Paula Souza — Colégio Bento Quirino</strong>.
                         O JANotifica foi sua forma de retribuir à escola um pouco do que ela
