@@ -7,7 +7,7 @@ import { Table } from "@/components/ui/Table";
 import styles from "./dashboard.module.css";
 
 export default function DashboardPage() {
-  const { data, loading, error, scanning, scan, notify } = useDashboard();
+  const { data, loading, error, scanning, scan, notify, page, setPage } = useDashboard();
 
   // Colunas da tabela de faltantes
   // render customizado para status e ação de notificação manual
@@ -41,54 +41,60 @@ export default function DashboardPage() {
         >
           Notificar
         </button>
-      ),  
+      ),
     },
   ];
 
   return (
     <div>
       <div className={styles.container}>
-
-        {/* Data de hoje */}
-        <p className={styles.date}>
-          {data?.date ?? "Carregando..."}
-        </p>
+        <p className={styles.date}>{data?.date ?? "Carregando..."}</p>
 
         {/* Cards de contadores */}
         <div className={styles.cards}>
-          <StatCard
-            title="Total de faltas"
-            value={data?.total ?? "—"}
-            color="blue"
-          />
-          <StatCard
-            title="Notificações enviadas"
-            value={data?.sent ?? "—"}
-            color="green"
-          />
-          <StatCard
-            title="Erros de envio"
-            value={data?.errors ?? "—"}
-            color="red"
-          />
+          <StatCard title="Total de faltas" value={data?.total ?? "—"} color="blue" />
+          <StatCard title="Enviadas" value={data?.sent ?? "—"} color="green" />
+          <StatCard title="Erros" value={data?.errors ?? "—"} color="red" />
         </div>
 
         {/* Tabela de faltantes */}
         <div className={styles.tableContainer}>
           <div className={styles.tableHeader}>
-            <h2 className={styles.tableTitle}>
-              Alunos faltantes
-            </h2>
+            <h2 className={styles.tableTitle}>Alunos faltantes</h2>
             <span className={styles.tableCount}>
               {data?.total ?? 0} registros
             </span>
           </div>
+
           <Table
             columns={columns}
-            data={data?.absences}
+            data={data?.items}
             loading={loading}
             empty="Nenhuma falta registrada hoje."
           />
+
+          {/* controle de paginação*/}
+          <div className={styles.pagination}>
+            <button
+              onClick={() => setPage(page - 1)}
+              disabled={page <= 1 || loading}
+              className={styles.pageButton}
+            >
+              Anterior
+            </button>
+
+            <span className={styles.pageIndicator}>
+              Página <strong>{page}</strong> de {data?.pages || 1}
+            </span>
+
+            <button
+              onClick={() => setPage(page + 1)}
+              disabled={page >= (data?.pages || 1) || loading}
+              className={styles.pageButton}
+            >
+              Próxima
+            </button>
+          </div>
         </div>
 
         <button
@@ -101,9 +107,7 @@ export default function DashboardPage() {
 
         {/* Exibe erro se houver */}
         {error && (
-          <p className={styles.error}>
-            Erro ao carregar dados: {error}
-          </p>
+          <p className={styles.error}>Erro ao carregar dados: {error}</p>
         )}
 
       </div>

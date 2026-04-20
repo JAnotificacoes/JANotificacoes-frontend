@@ -1,49 +1,33 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
+import { usePaginated } from "@/hooks/usePagination";
 import { fetchTodayAbsences, triggerScan, triggerCancel, sendManualNotification } from "@/services/api";
 
 export function useDashboard() {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [scanning, setScanning] = useState(false);
 
-  const load = useCallback(async () => {
-    try {
-      setLoading(true);
-      const result = await fetchTodayAbsences();
-      setData(result);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const { data, loading, error, reload, page, setPage } = usePaginated(fetchTodayAbsences);
+  const [scanning, setScanning] = useState(false);
 
   const scanAndCancel = useCallback(async () => {
     try {
       setScanning(true);
       await triggerCancel();
       await triggerScan();
-      await load();
+      await reload(); // Recarrega a página atual
     } catch (err) {
-      setError(err.message);
+      console.error(err);
     } finally {
       setScanning(false);
     }
-  }, [load]);
-
-  useEffect(() => {
-    scanAndCancel();
-  }, []);
+  }, [reload]);
 
   const notify = useCallback(async (absenceId) => {
     try {
       await sendManualNotification(absenceId);
-      await load();
+      await reload();
     } catch (err) {
-      setError(err.message);
+      console.error(err);
     }
-  }, [load]);
+  }, [reload]);
 
-  return { data, loading, error, scanning, scan: scanAndCancel, notify, reload: load };
+  return { data, loading, error, scanning, scan: scanAndCancel, notify, reload, page, setPage };
 }

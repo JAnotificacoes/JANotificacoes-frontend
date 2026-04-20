@@ -38,7 +38,7 @@ export function usePaginated(fetchFunction, initialFilters = {}) {
 
   const updateFilter = useCallback((key, value) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
-    setPage(1); // 🔥 mantém comportamento antigo
+    setPage(1);
   }, []);
 
   const resetFilters = useCallback(() => {

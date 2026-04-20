@@ -2,10 +2,23 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 // ── DASHBOARD ──
 
-export async function fetchTodayAbsences() {
-  const res = await fetch(`${API_URL}/absences/today`);
+export async function fetchTodayAbsences(params = {}) {
+  const query = new URLSearchParams({
+    page: params.page || 1,
+    page_size: params.page_size || 20,
+    // adicione outros filtros se necessário
+  }).toString();
+
+  const res = await fetch(`${API_URL}/absences/today?${query}`);
   if (!res.ok) throw new Error("Failed to fetch today absences");
-  return res.json();
+  
+  const data = await res.json();
+  
+  // O usePaginated espera que a lista de itens esteja em uma chave 'items'
+  return {
+    ...data,
+    items: data.absences // Mapeia 'absences' para 'items' para ser compatível com o hook
+  };
 }
 
 export async function triggerScan() {

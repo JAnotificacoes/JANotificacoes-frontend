@@ -80,6 +80,29 @@
   color: var(--color-primary-soft);
 }
 
+/* paginação */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.pageButton {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--color-border);
+  background: transparent;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.pageButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* erro */
 .error {
   margin-top: 1rem;
