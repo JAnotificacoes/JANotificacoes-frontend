@@ -21,7 +21,7 @@ export default function AboutPage() {
                     <p className={styles.cardText}>
                         O JANotifica foi desenvolvido para a <strong>Escola João Alves</strong>,
                         uma instituição de ensino fundamental I e II. O sistema nasceu de uma
-                        necessidade real da coordenação: reduzir o tempo gasto com ligações e
+                        necessidade real da coordenação: reduzir o tempo gasto com
                         mensagens manuais para avisar responsáveis sobre faltas dos alunos.
                     </p>
                 </div>
@@ -69,7 +69,7 @@ export default function AboutPage() {
                     {[
                         "Python", "FastAPI", "PostgreSQL", "SQLAlchemy",
                         "Google Sheets API", "Evolution API", "WhatsApp",
-                        "Docker", "Next.js", "Tailwind CSS",
+                        "Docker", "Next.js",
                     ].map((tech) => (
                         <span key={tech} className={styles.tag}>{tech}</span>
                     ))}
