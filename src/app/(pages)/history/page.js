@@ -14,7 +14,7 @@ export default function HistoryPage() {
     { key: "date", label: "Data da falta" },
     {
       key: "status",
-      label: "Status",
+      label: "Notificação",
       render: (row) => <Badge status={row.status} />,
     },
     { key: "sent_at", label: "Horário do envio" },
