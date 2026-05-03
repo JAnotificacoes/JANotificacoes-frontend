@@ -21,8 +21,6 @@ export function Badge({ status }) {
     pending:   "Pendente",
     online:    "Online",
     offline:   "Offline",
-    automatic: "Automático",
-    manual:    "Manual",
   };
 
   const style = variants[status] || styles.default;

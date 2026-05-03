@@ -17,11 +17,6 @@ export default function HistoryPage() {
       label: "Status",
       render: (row) => <Badge status={row.status} />,
     },
-    {
-      key: "origin",
-      label: "Origem",
-      render: (row) => row.origin ? <Badge status={row.origin} /> : "—",
-    },
     { key: "sent_at", label: "Horário do envio" },
     {
       key: "error",

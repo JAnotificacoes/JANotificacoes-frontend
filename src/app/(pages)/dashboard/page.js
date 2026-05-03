@@ -20,16 +20,6 @@ export default function DashboardPage() {
       label: "Notificação",
       render: (row) => <Badge status={row.notification_status} />,
     },
-    {
-      key: "notification_origin",
-      label: "Origem",
-      render: (row) =>
-        row.notification_origin ? (
-          <Badge status={row.notification_origin} />
-        ) : (
-          "—"
-        ),
-    },
     { key: "notification_time", label: "Horário" },
     {
       key: "action",

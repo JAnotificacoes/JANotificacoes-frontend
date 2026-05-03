@@ -8,7 +8,7 @@
 }
 
 .sent {
-  background-color: var(--color-pending-subtle);
+  background-color: var(--color-success-subtle);
   color: var(--color-success)
 }
 
@@ -30,16 +30,6 @@
 .offline {
   background-color: var(--color-error-subtle);
   color: var(--color-error)
-}
-
-.automatic {
-  background-color: rgba(45, 45, 150, 0.5);
-  color: rgb(75, 75, 255);
-}
-
-.manual {
-  background-color: var(--color-primary-soft);
-  color: var(--color-primary)
 }
 
 .default {
