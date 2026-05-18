@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSettings } from "@/hooks/useSettings";
 import styles from "./settings.module.css";
 
@@ -11,6 +11,8 @@ const VARIABLES = [
   { key: "{date}", label: "Data da falta" },
 ];
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+
 export default function SettingsPage() {
   const {
     status, loading, error,
@@ -20,10 +22,51 @@ export default function SettingsPage() {
 
   const [draft, setDraft] = useState("");
 
+  const [qrcode, setQrcode] = useState(null);
+  const [qrLoading, setQrLoading] = useState(false);
+  const [connected, setConnected] = useState(false);
+
   // Sincroniza o draft quando o template carrega do banco
   useEffect(() => {
     if (template) setDraft(template);
   }, [template]);
+
+  const fetchQrCode = useCallback(async () => {
+    setQrLoading(true);
+    try {
+      const res = await fetch(`${API_URL}/settings/whatsapp/qrcode`);
+      const data = await res.json();
+      if (data.connected) {
+        setConnected(true);
+        setQrcode(null);
+      } else {
+        setConnected(false);
+        setQrcode(data.qrcode);
+      }
+    } catch {
+      setQrcode(null);
+    } finally {
+      setQrLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+  const check = async () => {
+    try {
+      const res = await fetch(`${API_URL}/settings/status`);
+      const data = await res.json();
+      const isConnected = data?.whatsapp?.state === "open";
+      setConnected(isConnected);
+      if (!isConnected) setQrcode(null);
+    } catch {
+      setConnected(false);
+    }
+  };
+
+  check(); // checa imediatamente ao montar
+  const interval = setInterval(check, 15000); // repete a cada 15s
+  return () => clearInterval(interval); // limpa ao desmontar
+}, []);
 
   const isDirty = draft !== template;
 
@@ -52,6 +95,7 @@ export default function SettingsPage() {
             />
           </div>
         </section>
+
 
         {/* Template da mensagem */}
         <section className={styles.section}>
@@ -104,6 +148,36 @@ export default function SettingsPage() {
             >
               {saving ? "Salvando..." : "Salvar template"}
             </button>
+          </div>
+        </section>
+        {/*Seção QR Code */}
+        <section className={styles.section}>
+          <h2 className={styles.sectionTitle}>Conexão WhatsApp</h2>
+          <p className={styles.sectionDesc}>
+            Escaneie o QR Code abaixo com o WhatsApp da escola para conectar o sistema.
+          </p>
+
+          <div className={styles.qrcodeSection}>
+            {connected ? (
+              <p className={styles.saveSuccess}>WhatsApp conectado.</p>
+            ) : qrLoading ? (
+              <p className={styles.qrcodeHint}>Carregando QR Code...</p>
+            ) : qrcode ? (
+              <>
+                <img src={qrcode} alt="QR Code WhatsApp" className={styles.qrcodeImage} />
+                <p className={styles.qrcodeHint}>
+                  Abra o WhatsApp → Dispositivos conectados → Conectar dispositivo
+                </p>
+              </>
+            ) : (
+              <p className={styles.qrcodeHint}>Clique no botão para gerar o QR Code.</p>
+            )}
+
+            {!connected && (
+              <button className={styles.qrcodeButton} onClick={fetchQrCode} disabled={qrLoading}>
+                {qrLoading ? "Carregando..." : qrcode ? "Atualizar QR Code" : "Gerar QR Code"}
+              </button>
+            )}
           </div>
         </section>
         <div className={styles.errorContainer}>
