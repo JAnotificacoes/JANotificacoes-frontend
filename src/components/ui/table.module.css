@@ -39,6 +39,13 @@
   color: var(--color-text-primary);
 }
 
+@media (max-width: 640px) {
+  .th,
+  .td {
+    padding: 0.5rem;
+  }
+}
+
 /* estados */
 .empty,
 .loading {
