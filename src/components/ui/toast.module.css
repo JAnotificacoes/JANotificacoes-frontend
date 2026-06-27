@@ -1,0 +1,84 @@
+.container {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  pointer-events: none;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  pointer-events: auto;
+  animation: slideIn 0.25s ease-out;
+  max-width: 24rem;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.success {
+  background-color: #065f46;
+  color: #d1fae5;
+  border: 1px solid #059669;
+}
+
+.error {
+  background-color: #7f1d1d;
+  color: #fecaca;
+  border: 1px solid #dc2626;
+}
+
+.info {
+  background-color: #1e3a5f;
+  color: #dbeafe;
+  border: 1px solid #3b82f6;
+}
+
+.message {
+  flex: 1;
+}
+
+.dismiss {
+  background: none;
+  border: none;
+  color: inherit;
+  opacity: 0.7;
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+}
+
+.dismiss:hover {
+  opacity: 1;
+}
+
+@media (max-width: 640px) {
+  .container {
+    right: 0.5rem;
+    left: 0.5rem;
+    bottom: 0.5rem;
+  }
+
+  .toast {
+    max-width: 100%;
+  }
+}
