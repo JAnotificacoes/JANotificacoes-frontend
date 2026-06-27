@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useSettings } from "@/hooks/useSettings";
+import { useToast } from "@/components/ui/ToastProvider";
+import { fetchQrCode, fetchWhatsAppStatus } from "@/services/api";
 import styles from "./settings.module.css";
 
 const VARIABLES = [
@@ -11,16 +13,16 @@ const VARIABLES = [
   { key: "{date}", label: "Data da falta" },
 ];
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
-
 export default function SettingsPage() {
   const {
     status, loading, error,
-    template, saving, saveError, saveSuccess,
+    template, saving,
     updateTemplate,
   } = useSettings();
 
   const [draft, setDraft] = useState("");
+
+  const { toast } = useToast();
 
   const [qrcode, setQrcode] = useState(null);
   const [qrLoading, setQrLoading] = useState(false);
@@ -31,11 +33,10 @@ export default function SettingsPage() {
     if (template) setDraft(template);
   }, [template]);
 
-  const fetchQrCode = useCallback(async () => {
+  const loadQrCode = useCallback(async () => {
     setQrLoading(true);
     try {
-      const res = await fetch(`${API_URL}/settings/whatsapp/qrcode`);
-      const data = await res.json();
+      const data = await fetchQrCode();
       if (data.connected) {
         setConnected(true);
         setQrcode(null);
@@ -45,6 +46,7 @@ export default function SettingsPage() {
       }
     } catch {
       setQrcode(null);
+      toast.error("Erro ao gerar QR Code. Verifique a conexão com a Evolution API.");
     } finally {
       setQrLoading(false);
     }
@@ -53,8 +55,7 @@ export default function SettingsPage() {
   useEffect(() => {
   const check = async () => {
     try {
-      const res = await fetch(`${API_URL}/settings/status`);
-      const data = await res.json();
+      const data = await fetchWhatsAppStatus();
       const isConnected = data?.whatsapp?.state === "open";
       setConnected(isConnected);
       if (!isConnected) setQrcode(null);
@@ -63,9 +64,9 @@ export default function SettingsPage() {
     }
   };
 
-  check(); // checa imediatamente ao montar
-  const interval = setInterval(check, 15000); // repete a cada 15s
-  return () => clearInterval(interval); // limpa ao desmontar
+  check();
+  const interval = setInterval(check, 15000);
+  return () => clearInterval(interval);
 }, []);
 
   const isDirty = draft !== template;
@@ -124,14 +125,6 @@ export default function SettingsPage() {
             spellCheck={false}
           />
 
-          {/* Feedback */}
-          {saveError && (
-            <p className={styles.saveError}>{saveError}</p>
-          )}
-          {saveSuccess && (
-            <p className={styles.saveSuccess}>Template salvo com sucesso.</p>
-          )}
-
           {/* Ações */}
           <div className={styles.actions}>
             <button
@@ -174,7 +167,7 @@ export default function SettingsPage() {
             )}
 
             {!connected && (
-              <button className={styles.qrcodeButton} onClick={fetchQrCode} disabled={qrLoading}>
+              <button className={styles.qrcodeButton} onClick={loadQrCode} disabled={qrLoading}>
                 {qrLoading ? "Carregando..." : qrcode ? "Atualizar QR Code" : "Gerar QR Code"}
               </button>
             )}
