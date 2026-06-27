@@ -80,3 +80,15 @@ export async function saveTemplate(template) {
   }
   return res.json();
 }
+
+export async function fetchQrCode() {
+  const res = await fetch(`${API_URL}/settings/whatsapp/qrcode`);
+  if (!res.ok) throw new Error("Failed to fetch QR code");
+  return res.json();
+}
+
+export async function fetchWhatsAppStatus() {
+  const res = await fetch(`${API_URL}/settings/status`);
+  if (!res.ok) throw new Error("Failed to fetch status");
+  return res.json();
+}

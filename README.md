@@ -1,36 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# JANotifica — Frontend
 
-## Getting Started
+Painel da coordenação para o sistema de notificação de faltas escolares via WhatsApp.
+Interface para escanear planilhas, revisar faltas, disparar notificações e acompanhar o histórico.
 
-First, run the development server:
+<div align="center">
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nextjs/nextjs-original.svg" width="100" height="100" alt="Next.js"/>
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg" width="100" height="100" alt="React"/>
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg" width="100" height="100" alt="Tailwind CSS"/>
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg" width="100" height="100" alt="JavaScript"/>
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/docker/docker-original.svg" width="100" height="100" alt="Docker"/>
+</div>
+
+---
+
+## Stack
+
+| Tecnologia | Versão | Uso |
+|------------|--------|-----|
+| Next.js | 15 | Framework (App Router) |
+| React | 19 | UI |
+| Tailwind CSS | — | Estilização |
+| CSS Modules | — | Estilos específicos |
+| Docker | — | Containerização |
+
+## Páginas
+
+| Rota | Descrição |
+|------|-----------|
+| `/dashboard` | Faltas do dia, botão de scan, notificação manual |
+| `/history` | Histórico com filtros por turma, data e status |
+| `/settings` | Status das integrações, template de mensagem, QR Code WhatsApp |
+| `/about` | Informações do sistema |
+
+## Setup
+
+### Desenvolvimento
 
 ```bash
+git clone https://github.com/JANotificacoes/JANotificacoes-frontend.git
+cd JANotificacoes-frontend
+
+cp .env.example .env.local
+# Editar NEXT_PUBLIC_API_URL se necessário
+
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Acessar em `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+### Docker Compose (recomendado)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+O frontend faz parte de um stack de 3 containers. O `docker-compose.yml` completo está neste repositório — consulte o arquivo na raiz para subir evolution + backend + frontend:
 
-## Learn More
+```bash
+docker compose up -d
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Variáveis de Ambiente
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Variável | Default | Descrição |
+|----------|---------|-----------|
+| `NEXT_PUBLIC_API_URL` | `http://localhost:8000` | URL do backend |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Integração
 
-## Deploy on Vercel
+O frontend consome a API REST do [JANotifica Backend](https://github.com/JANotificacoes/JANotificacoes-backend) em `http://localhost:8000`.
+Todas as chamadas são feitas via `fetch` com `NEXT_PUBLIC_API_URL`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Projetos Relacionados
+
+- [JANotifica Backend](https://github.com/JANotificacoes/JANotificacoes-backend) — API do sistema

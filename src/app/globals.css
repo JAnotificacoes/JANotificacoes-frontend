@@ -78,22 +78,15 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    /* Dark azul ao estilo dashboards modernos
     --background: #020617;
-    /* slate-950 */
     --foreground: #e5e7eb;
-    /* slate-200 */
 
     --color-surface: #020617;
-    /* fundo de cards/tabelas */
     --color-surface-elevated: #020617;
     --color-border: #1f2937;
-    /* slate-800 */
 
     --color-primary: #8ca4ccd5;
-    /* blue-500 */
     --color-primary-soft: #93add68f;
-    /* blue-700 para hover */
 
     --color-text-primary: #e5e7eb;
     --color-text-secondary: #9ca3af;

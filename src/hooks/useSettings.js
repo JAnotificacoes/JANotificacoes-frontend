@@ -1,14 +1,14 @@
 import { useState, useEffect, useCallback } from "react";
 import { fetchStatus, fetchTemplate, saveTemplate } from "@/services/api";
+import { useToast } from "@/components/ui/ToastProvider";
 
 export function useSettings() {
   const [status, setStatus] = useState(null);
   const [template, setTemplate] = useState("");
   const [saving, setSaving] = useState(false);
-  const [saveError, setSaveError] = useState(null);
-  const [saveSuccess, setSaveSuccess] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { toast } = useToast();
 
   const loadStatus = useCallback(async () => {
     try {
@@ -42,23 +42,19 @@ export function useSettings() {
   const updateTemplate = useCallback(async (newTemplate) => {
     try {
       setSaving(true);
-      setSaveError(null);
-      setSaveSuccess(false);
       const result = await saveTemplate(newTemplate);
       setTemplate(result.template);
-      setSaveSuccess(true);
-      // Limpa o feedback de sucesso após 3 segundos
-      setTimeout(() => setSaveSuccess(false), 3000);
+      toast.success("Template salvo com sucesso.");
     } catch (err) {
-      setSaveError(err.message);
+      toast.error(err.message || "Erro ao salvar template.");
     } finally {
       setSaving(false);
     }
-  }, []);
+  }, [toast]);
 
   return {
     status, loading, error,
-    template, saving, saveError, saveSuccess,
+    template, saving,
     updateTemplate, reload: loadStatus,
   };
 }

@@ -32,7 +32,7 @@ export function Table({ columns, data, loading, empty = "Nenhum registro encontr
 
         <tbody>
           {data.map((row, i) => (
-            <tr key={i} className={styles.tr}>
+            <tr key={row.absence_id ?? row.student_id ?? i} className={styles.tr}>
               {columns.map((col) => (
                 <td key={col.key} className={styles.td}>
                   {col.render ? col.render(row) : row[col.key] ?? "—"}

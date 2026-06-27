@@ -23,13 +23,13 @@
 .blue {
   color: var(--color-primary);
   background-color: var(--color-primary-soft);
-  border-color: var(--color-border);;
+  border-color: var(--color-border);
 }
 
 .red {
   color: var(--color-error);
   background-color: var(--color-error-subtle);
-  border-color: var(--color-border);;
+  border-color: var(--color-border);
 }
 
 .green {
