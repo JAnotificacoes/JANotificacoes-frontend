@@ -7,6 +7,7 @@ const initialFilters = {
   school_year: "",
   classroom: "",
   status: "",
+  student_name: "",
 };
 
 export function useHistory() {

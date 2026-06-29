@@ -6,14 +6,12 @@
   margin: 0 auto;
 }
 
-/* ── Seções ── */
-
 .section {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  background-color: var(--color-surface);
-  border: 0.063rem solid var(--color-border);
+  background-color: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 0.5rem;
   padding: 1.5rem;
 }
@@ -21,18 +19,16 @@
 .sectionTitle {
   font-size: 0.938rem;
   font-weight: 600;
-  color: var(--color-text-primary);
+  color: var(--text);
   margin: 0;
 }
 
 .sectionDesc {
   font-size: 0.813rem;
-  color: var(--color-text-secondary);
+  color: var(--text-soft);
   margin: 0;
   line-height: 1.6;
 }
-
-/* ── Status ── */
 
 .statusGrid {
   display: flex;
@@ -45,7 +41,7 @@
   align-items: center;
   gap: 0.75rem;
   padding: 0.75rem 1rem;
-  border: 0.063rem solid var(--color-border);
+  border: 1px solid var(--border);
   border-radius: 0.375rem;
 }
 
@@ -56,8 +52,8 @@
   flex-shrink: 0;
 }
 
-.dotOnline  { background-color: var(--color-success); }
-.dotOffline { background-color: var(--color-error); }
+.dotOnline  { background-color: var(--success); }
+.dotOffline { background-color: var(--error); }
 
 .statusInfo {
   display: flex;
@@ -68,15 +64,13 @@
 .statusLabel {
   font-size: 0.813rem;
   font-weight: 500;
-  color: var(--color-text-primary);
+  color: var(--text);
 }
 
 .statusValue {
   font-size: 0.75rem;
-  color: var(--color-text-secondary);
+  color: var(--text-soft);
 }
-
-/* ── Template ── */
 
 .variables {
   display: flex;
@@ -89,28 +83,28 @@
   align-items: center;
   gap: 0.375rem;
   padding: 4px 0.625rem;
-  border: 0.063rem solid var(--color-border);
+  border: 1px solid var(--border);
   border-radius: 0.375rem;
   font-size: 0.75rem;
 }
 
 .varCode {
-  color: var(--color-primary);
+  color: var(--primary);
   font-family: monospace;
   font-size: 0.75rem;
 }
 
 .varLabel {
-  color: var(--color-text-secondary);
+  color: var(--text-soft);
 }
 
 .textarea {
   width: 100%;
   padding: 0.75rem;
-  border: 0.063rem solid var(--color-border);
+  border: 1px solid var(--border);
   border-radius: 0.375rem;
-  background-color: var(--color-background);
-  color: var(--color-text-primary);
+  background-color: var(--bg);
+  color: var(--text);
   font-size: 0.813rem;
   font-family: monospace;
   line-height: 1.6;
@@ -121,10 +115,8 @@
 }
 
 .textarea:focus {
-  border-color: var(--color-primary);
+  border-color: var(--primary);
 }
-
-/* ── Ações ── */
 
 .actions {
   display: flex;
@@ -135,18 +127,18 @@
 .resetButton {
   height: 2.5rem;
   padding: 0 0.875rem;
-  border: 0.063rem solid var(--color-border);
+  border: 1px solid var(--border);
   border-radius: 0.375rem;
   background-color: transparent;
-  color: var(--color-text-secondary);
+  color: var(--text-soft);
   font-size: 0.813rem;
   cursor: pointer;
   transition: background-color 0.15s, color 0.15s;
 }
 
 .resetButton:hover:not(:disabled) {
-  background-color: var(--color-border);
-  color: var(--color-text-primary);
+  background-color: var(--surface-soft);
+  color: var(--text);
 }
 
 .resetButton:disabled {
@@ -159,8 +151,8 @@
   padding: 0 0.875rem;
   border: none;
   border-radius: 0.375rem;
-  background-color: var(--color-primary);
-  color: var(--color-text-primary);
+  background-color: var(--primary);
+  color: #ffffff;
   font-size: 0.813rem;
   font-weight: 500;
   cursor: pointer;
@@ -168,7 +160,7 @@
 }
 
 .saveButton:hover:not(:disabled) {
-  background-color: var(--color-primary-soft);
+  background-color: var(--primary-dark);
 }
 
 .saveButton:disabled {
@@ -176,27 +168,24 @@
   cursor: not-allowed;
 }
 
-/* ── Feedback ── */
-
 .saveSuccess {
   font-size: 0.813rem;
-  color: var(--color-success);
+  color: var(--success);
   margin: 0;
 }
 
 .error {
   font-size: 0.813rem;
-  color: var(--color-error);
+  color: var(--error);
   padding: 0.75rem 1rem;
-  background-color: var(--color-error-subtle);
+  background-color: var(--error-soft);
   border-radius: 0.375rem;
 }
 
-.errorContainer{
+.errorContainer {
   flex-direction: column;
 }
 
-/* ── QR Code ── */
 .qrcodeSection {
   display: flex;
   flex-direction: column;
@@ -208,23 +197,52 @@
 .qrcodeImage {
   width: 200px;
   height: 200px;
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--border);
   border-radius: 8px;
 }
 
 .qrcodeHint {
   font-size: 13px;
-  color: var(--color-text-secondary);
+  color: var(--text-soft);
   text-align: center;
+}
+
+.disconnectButton {
+  font-size: 13px;
+  padding: 8px 20px;
+  border: 1px solid var(--error);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--error);
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.disconnectButton:hover {
+  background-color: var(--error);
+  color: #ffffff;
+}
+
+.disconnectButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 .qrcodeButton {
   font-size: 13px;
   padding: 6px 16px;
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--border);
   border-radius: 6px;
   background: transparent;
+  color: var(--text-soft);
   cursor: pointer;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.qrcodeButton:hover {
+  background-color: var(--surface-soft);
+  color: var(--text);
 }
 
 @media (max-width: 640px) {

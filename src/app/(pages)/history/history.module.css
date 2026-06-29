@@ -4,15 +4,13 @@
   gap: 1.5rem;
 }
 
-/* ── Filtros ── */
-
 .filters {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-end;
   gap: 1rem;
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
+  background-color: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 0.5rem;
   padding: 1.25rem;
 }
@@ -26,7 +24,7 @@
 .label {
   font-size: 0.75rem;
   font-weight: 500;
-  color: var(--color-text-secondary);
+  color: var(--text-soft);
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -35,10 +33,10 @@
 .select {
   height: 2.25rem;
   padding: 0 0.625rem;
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--border);
   border-radius: 0.375rem;
-  background-color: var(--color-background);
-  color: var(--color-text-primary);
+  background-color: var(--bg);
+  color: var(--text);
   font-size: 14px;
   outline: none;
   transition: border-color 0.15s;
@@ -46,20 +44,20 @@
 
 .input:focus,
 .select:focus {
-  border-color: var(--color-primary);
+  border-color: var(--primary);
 }
 
 .input::placeholder {
-  color: var(--color-text-muted);
+  color: var(--text-muted);
 }
 
 .resetButton {
   height: 2.25rem;
   padding: 0 0.875rem;
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--border);
   border-radius: 0.375rem;
   background-color: transparent;
-  color: var(--color-text-secondary);
+  color: var(--text-soft);
   font-size: 13px;
   cursor: pointer;
   transition: background-color 0.15s, color 0.15s;
@@ -67,15 +65,13 @@
 }
 
 .resetButton:hover {
-  background-color: var(--color-border);
-  color: var(--color-text-primary);
+  background-color: var(--surface-soft);
+  color: var(--text);
 }
 
-/* ── Tabela ── */
-
 .tableContainer {
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
+  background-color: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 0.5rem;
   overflow: hidden;
 }
@@ -85,59 +81,57 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem 1.25rem;
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--border);
 }
 
 .tableTitle {
   font-size: 15px;
   font-weight: 600;
-  color: var(--color-text-primary);
+  color: var(--text);
   margin: 0;
 }
 
 .tableCount {
   font-size: 13px;
-  color: var(--color-text-secondary);
+  color: var(--text-soft);
 }
-
-/* ── Estados ── */
 
 .errorMessage {
   font-size: 12px;
-  color: var(--color-error);
+  color: var(--error);
 }
 
 .error {
   font-size: 13px;
-  color: var(--color-error);
+  color: var(--error);
   padding: 0.75rem 1rem;
-  background-color: var(--color-error-subtle);
+  background-color: var(--error-soft);
   border-radius: 0.375rem;
 }
 
-/* ── Paginacao ── */
 .pagination {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 1rem;
+  padding: 1rem;
 }
 
 .pageButton {
   height: 2.125rem;
   padding: 0 1rem;
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--border);
   border-radius: 0.375rem;
   background-color: transparent;
-  color: var(--color-text-secondary);
+  color: var(--text-soft);
   font-size: 13px;
   cursor: pointer;
   transition: background-color 0.15s, color 0.15s;
 }
 
 .pageButton:hover:not(:disabled) {
-  background-color: var(--color-border);
-  color: var(--color-text-primary);
+  background-color: var(--surface-soft);
+  color: var(--text);
 }
 
 .pageButton:disabled {
@@ -147,7 +141,84 @@
 
 .pageInfo {
   font-size: 13px;
-  color: var(--color-text-secondary);
+  color: var(--text-soft);
+}
+
+.searchWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  min-width: 14rem;
+}
+
+.autocomplete {
+  position: relative;
+}
+
+.searchInput {
+  height: 2.25rem;
+  width: 100%;
+  padding: 0 0.625rem;
+  border: 1px solid var(--border);
+  border-radius: 0.375rem;
+  background-color: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.15s;
+  box-sizing: border-box;
+}
+
+.searchInput:focus {
+  border-color: var(--primary);
+}
+
+.searchInput::placeholder {
+  color: var(--text-muted);
+}
+
+.suggestions {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0.375rem 0;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.375rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 50;
+  max-height: 18rem;
+  overflow-y: auto;
+}
+
+.suggestionItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  transition: background-color 0.1s;
+}
+
+.suggestionItem:hover,
+.suggestionActive {
+  background-color: var(--surface-soft);
+}
+
+.suggestionName {
+  font-size: 14px;
+  color: var(--text);
+  font-weight: 500;
+}
+
+.suggestionClass {
+  font-size: 12px;
+  color: var(--text-soft);
+  white-space: nowrap;
 }
 
 @media (max-width: 640px) {

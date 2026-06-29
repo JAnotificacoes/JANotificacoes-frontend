@@ -1,10 +1,8 @@
 "use client";
-
 import { useState, useCallback } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
-import styles from "@/components/layout/sidebar.module.css";
+import styles from "./sidebar.module.css";
 
 function Icon({ d, viewBox = "0 0 24 24" }) {
   return (
@@ -24,23 +22,18 @@ const navItems = [
 export function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
-
   const close = useCallback(() => setIsOpen(false), []);
 
   return (
     <>
       <button
         className={styles.hamburger}
-        onClick={() => setIsOpen((v) => !v)}
+        onClick={() => setIsOpen(v => !v)}
         aria-label={isOpen ? "Fechar menu" : "Abrir menu"}
         aria-expanded={isOpen}
       >
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-          {isOpen ? (
-            <path d="M18 6L6 18M6 6l12 12" />
-          ) : (
-            <path d="M3 12h18M3 6h18M3 18h18" />
-          )}
+          {isOpen ? <path d="M18 6L6 18M6 6l12 12" /> : <path d="M3 12h18M3 6h18M3 18h18" />}
         </svg>
       </button>
 
@@ -48,21 +41,21 @@ export function Sidebar() {
 
       <aside className={`${styles.sidebar} ${isOpen ? styles.sidebarOpen : ""}`}>
         <div className={styles.brand}>
-          <div className={styles.brandMark}>
-            <Image
+          <div className={styles.brandInner}>
+            <img
               src="/logo.png"
-              alt="Logo da Escola João Alves"
-              placeholder="empty"
-              width={256}
-              height={256}
-              loading="eager"
+              alt="JANotifica"
+              className={styles.brandLogo}
             />
+            <span className={styles.brandName}>
+              JA<span className={styles.brandHighlight}>notifica</span>
+            </span>
+            <p className={styles.brandSub}>Painel da Coordenação</p>
           </div>
-          <p className={styles.brandSub}>Painel da Coordenação</p>
         </div>
 
         <nav className={styles.nav}>
-          {navItems.map((item) => {
+          {navItems.map(item => {
             const isActive = pathname === item.href;
             return (
               <Link

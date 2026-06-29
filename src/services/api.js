@@ -41,6 +41,14 @@ export async function sendManualNotification(absenceId) {
   return res.json();
 }
 
+// ── ESTUDANTES ──
+
+export async function searchStudents(q) {
+  const res = await fetch(`${API_URL}/students/autocomplete?q=${encodeURIComponent(q)}`);
+  if (!res.ok) throw new Error("Failed to search students");
+  return res.json();
+}
+
 // ── HISTÓRICO ──
 
 export async function fetchHistory(params = {}) {
@@ -90,5 +98,14 @@ export async function fetchQrCode() {
 export async function fetchWhatsAppStatus() {
   const res = await fetch(`${API_URL}/settings/status`);
   if (!res.ok) throw new Error("Failed to fetch status");
+  return res.json();
+}
+
+export async function disconnectWhatsApp() {
+  const res = await fetch(`${API_URL}/settings/whatsapp/disconnect`, { method: "POST" });
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.detail || "Erro ao desconectar WhatsApp");
+  }
   return res.json();
 }

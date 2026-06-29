@@ -2,36 +2,54 @@
   margin-top: 1.5rem;
 }
 
+.date {
+  font-size: 0.875rem;
+  color: var(--text-soft);
+  margin-bottom: 1rem;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+}
+
 .scanButton {
-  padding: 0.7rem 1rem;
-  margin-top: 2rem;
-  background-color: var(--color-primary);          
-  color: var(--color-text-primary);                
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  background-color: var(--primary);
+  color: #ffffff;
   font-size: 0.875rem;
   font-weight: 500;
+  border: none;
   border-radius: 0.5rem;
-  transition: background-color 0.2s, box-shadow 0.2s, transform 0.1s;
+  cursor: pointer;
+  transition: background-color 0.15s, box-shadow 0.15s, transform 0.1s;
+  box-shadow: var(--shadow-sm);
 }
 
 .scanButton:hover {
-  background-color: var(--color-primary-soft);     
-  box-shadow: 0 4px 6px rgba(139, 182, 252, 0.3);   
+  background-color: var(--primary-dark);
+  box-shadow: var(--shadow-md);
   transform: translateY(-1px);
 }
 
 .scanButton:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
-/* data */
-.date {
+.toolbarCount {
   font-size: 0.875rem;
-  color: var(--color-text-secondary);              
-  margin-bottom: 1rem;
+  color: var(--text-soft);
 }
 
-/* grid cards */
 .cards {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -39,17 +57,16 @@
   margin-bottom: 1.5rem;
 }
 
-/* container tabela */
 .tableContainer {
-  background-color: var(--color-surface);          
+  background-color: var(--surface);
   border-radius: 0.75rem;
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--border);
+  overflow: hidden;
 }
 
-/* header da tabela */
 .tableHeader {
   padding: 1rem 1.25rem;
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -58,27 +75,32 @@
 .tableTitle {
   font-size: 0.875rem;
   font-weight: 600;
-  color: var(--color-text-primary);
+  color: var(--text);
+  margin: 0;
 }
 
 .tableCount {
   font-size: 0.75rem;
-  color: var(--color-text-secondary);
+  color: var(--text-soft);
 }
 
-/* botão ação */
 .actionButton {
   font-size: 0.75rem;
   font-weight: 500;
-  color: var(--color-primary);
-  transition: color 0.2s;
+  color: var(--primary);
+  background: none;
+  border: 1px solid var(--primary-soft);
+  border-radius: 0.375rem;
+  padding: 0.25rem 0.625rem;
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s;
 }
 
 .actionButton:hover {
-  color: var(--color-primary-soft);
+  background-color: var(--primary-soft);
+  color: var(--primary-dark);
 }
 
-/* paginação */
 .pagination {
   display: flex;
   justify-content: center;
@@ -90,22 +112,37 @@
 
 .pageButton {
   padding: 0.5rem 1rem;
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--border);
+  border-radius: 0.375rem;
   background: transparent;
+  color: var(--text-soft);
+  font-size: 0.813rem;
   cursor: pointer;
-  border-radius: 4px;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.pageButton:hover:not(:disabled) {
+  background-color: var(--surface-soft);
+  color: var(--text);
 }
 
 .pageButton:disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
-/* erro */
+.pageIndicator {
+  font-size: 0.813rem;
+  color: var(--text-soft);
+}
+
 .error {
   margin-top: 1rem;
+  padding: 0.75rem 1rem;
   font-size: 0.875rem;
-  color: var(--color-error);
+  color: var(--error);
+  background-color: var(--error-soft);
+  border-radius: 0.375rem;
 }
 
 @media (max-width: 640px) {
@@ -114,8 +151,13 @@
     gap: 12px;
   }
 
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
   .scanButton {
-    width: 100%;
+    justify-content: center;
   }
 
   .pagination {

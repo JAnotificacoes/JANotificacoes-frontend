@@ -3,7 +3,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { useSettings } from "@/hooks/useSettings";
 import { useToast } from "@/components/ui/ToastProvider";
-import { fetchQrCode, fetchWhatsAppStatus } from "@/services/api";
+import { fetchQrCode, fetchWhatsAppStatus, disconnectWhatsApp } from "@/services/api";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import styles from "./settings.module.css";
 
 const VARIABLES = [
@@ -27,6 +28,23 @@ export default function SettingsPage() {
   const [qrcode, setQrcode] = useState(null);
   const [qrLoading, setQrLoading] = useState(false);
   const [connected, setConnected] = useState(false);
+  const [disconnecting, setDisconnecting] = useState(false);
+  const [showDisconnectModal, setShowDisconnectModal] = useState(false);
+
+  const handleConfirmDisconnect = useCallback(async () => {
+    setShowDisconnectModal(false);
+    setDisconnecting(true);
+    try {
+      await disconnectWhatsApp();
+      setConnected(false);
+      setQrcode(null);
+      toast.success("WhatsApp desconectado com sucesso.");
+    } catch (err) {
+      toast.error(err.message || "Erro ao desconectar WhatsApp.");
+    } finally {
+      setDisconnecting(false);
+    }
+  }, [toast]);
 
   // Sincroniza o draft quando o template carrega do banco
   useEffect(() => {
@@ -152,7 +170,16 @@ export default function SettingsPage() {
 
           <div className={styles.qrcodeSection}>
             {connected ? (
-              <p className={styles.saveSuccess}>WhatsApp conectado.</p>
+              <>
+                <p className={styles.saveSuccess}>WhatsApp conectado.</p>
+                <button
+                  className={styles.disconnectButton}
+                  onClick={() => setShowDisconnectModal(true)}
+                  disabled={disconnecting}
+                >
+                  {disconnecting ? "Desconectando..." : "Desconectar WhatsApp"}
+                </button>
+              </>
             ) : qrLoading ? (
               <p className={styles.qrcodeHint}>Carregando QR Code...</p>
             ) : qrcode ? (
@@ -173,6 +200,17 @@ export default function SettingsPage() {
             )}
           </div>
         </section>
+        <ConfirmDialog
+          open={showDisconnectModal}
+          title="Desconectar WhatsApp"
+          message="Tem certeza que deseja desconectar o WhatsApp da escola? Será necessário escanear o QR Code novamente para reconectar."
+          confirmLabel="Desconectar"
+          cancelLabel="Cancelar"
+          danger
+          onConfirm={handleConfirmDisconnect}
+          onCancel={() => setShowDisconnectModal(false)}
+        />
+
         <div className={styles.errorContainer}>
           {error && (
             <p className={styles.error}>Erro ao carregar configurações: {error}</p>

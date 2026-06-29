@@ -1,110 +1,105 @@
 @import "tailwindcss";
 
-/* ========= Design tokens base ========= */
-
 :root {
-  /* Tema padrão (fallback) – dark azul */
-  --background: #020617;
-  /* fundo geral bem escuro */
-  --foreground: #e5e7eb;
-  /* texto padrão */
-
-  /* Superfícies e bordas */
-  --color-surface: #020617;
-  /* bg principal */
-  --color-surface-elevated: #020617;
-  /* se quiser cards mais claros */
-  --color-border: #1f2937;
-
-  /* Azul principal (primary) */
-  --color-primary: #93add68f;
-  /* azul vibrante */
-  --color-primary-soft: #8ca4ccd5;
-  /* variação para hover/estado ativo */
-
-  /* Texto */
-  --color-text-primary: #e5e7eb;
-  --color-text-secondary: #9ca3af;
-  --color-text-muted: #6b7280;
-
-  /* Estados */
-  --color-error: #b91c1c;
-  --color-error-subtle: #451a1f;
-  --color-success: #15803d;
-  --color-success-subtle: #093b1b;
-  --color-pending: #a16207;
-  --color-pending-subtle: #553304;
-  ;
-}
-
-/* Integração com Tailwind via @theme */
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-/* ========= Light/Dark (preferência do SO) ========= */
+@theme inline {
+  --color-background: var(--bg);
+  --color-foreground: var(--text);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: var(--primary-soft);
+  color: var(--primary-dark);
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(100%); }
+  to { opacity: 1; transform: translateX(0); }
+}
 
 @media (prefers-color-scheme: light) {
   :root {
-    /* Você pode deixar o foco no dark e só dar um light neutro simples */
-    --background: #f9fafb;
-    --foreground: #111827;
+    --bg: #f6f4ef;
+    --text: #2c2822;
+    --text-soft: #6b6460;
+    --text-muted: #9c9590;
 
-    --color-surface: #ffffff;
-    --color-surface-elevated: #f9fafb;
-    --color-border: #e5e7eb;
+    --surface: #ffffff;
+    --surface-soft: #fcfaf7;
+    --border: #e6dfd3;
+    --border-light: #f0ebe3;
 
-    --color-primary: #48659246;
-    /* azul vibrante */
-    --color-primary-soft: #e3edff;
-    /* variação para hover/estado ativo */
+    --primary: #2d6a9f;
+    --primary-soft: #e8f0f8;
+    --primary-dark: #1d4d78;
 
-    --color-text-primary: #111827;
-    --color-text-secondary: #4b5563;
-    --color-text-muted: #6b7280;
+    --success: #2f7a4f;
+    --success-soft: #e6f3eb;
+    --error: #c4433a;
+    --error-soft: #f8e8e6;
+    --pending: #b8862e;
+    --pending-soft: #f8f0e0;
 
-    --color-error: #ef4444;
-    --color-error-subtle: #fee2e2;
-    --color-success: #0d42218a;
-    --color-success-subtle: #84bb99;
-    --color-pending: #a16207;
-    --color-pending-subtle: #553304;
-    ;
+    --accent: #c47a3a;
+    --accent-soft: #faf0e6;
+
+    --shadow-sm: 0 1px 3px rgba(44, 40, 34, 0.06);
+    --shadow-md: 0 4px 12px rgba(44, 40, 34, 0.08);
+    --shadow-lg: 0 8px 24px rgba(44, 40, 34, 0.1);
   }
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #020617;
-    --foreground: #e5e7eb;
+    --bg: #161310;
+    --text: #e8e2da;
+    --text-soft: #a69f96;
+    --text-muted: #7a7470;
 
-    --color-surface: #020617;
-    --color-surface-elevated: #020617;
-    --color-border: #1f2937;
+    --surface: #1e1b17;
+    --surface-soft: #26231e;
+    --border: #332e28;
+    --border-light: #2a2621;
 
-    --color-primary: #8ca4ccd5;
-    --color-primary-soft: #93add68f;
+    --primary: #5a8fc7;
+    --primary-soft: #1e2d3d;
+    --primary-dark: #3d6b9e;
 
-    --color-text-primary: #e5e7eb;
-    --color-text-secondary: #9ca3af;
-    --color-text-muted: #6b7280;
+    --success: #4a9e6a;
+    --success-soft: #1a2e24;
+    --error: #d45c52;
+    --error-soft: #2e1a1a;
+    --pending: #cc9a3a;
+    --pending-soft: #2a2218;
 
-    --color-error: #f97373;
-    --color-error-subtle: #451a1f;
-    --color-success: #15803d;
-    --color-success-subtle: #093b1b;
-    --color-pending: #a16207;
-    --color-pending-subtle: #553304;
+    --accent: #d48a4a;
+    --accent-soft: #2a1e14;
+
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
   }
-}
-
-/* ========= Body ========= */
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
 }
