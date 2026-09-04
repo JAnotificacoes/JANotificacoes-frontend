@@ -1,4 +1,20 @@
+// Base URL do backend: via env (build-time no Next.js).
+// dev: http://localhost:8000 | prod (Vercel): https://janotifica-api.onrender.com
+// O fallback localhost existe só para dev — em produção sem a env, as
+// chamadas falham; o erro abaixo deixa isso explícito no console.
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
+if (
+  !process.env.NEXT_PUBLIC_API_URL &&
+  typeof window !== "undefined" &&
+  window.location.hostname !== "localhost" &&
+  window.location.hostname !== "127.0.0.1"
+) {
+  console.error(
+    "[JANotifica] NEXT_PUBLIC_API_URL não definida — chamadas à API vão mirar localhost e falhar. " +
+      "Configure a env no deploy (Vercel) e faça rebuild."
+  );
+}
 
 const AUTH_PATHS = ["/login", "/auth/register", "/auth/change-password"];
 
