@@ -1,8 +1,6 @@
 import { Geist } from "next/font/google";
-import { Sidebar } from "@/components/layout/SideBar";
-import { Header } from "@/components/layout/Header";
+import { ShellLayout } from "@/components/layout/ShellLayout";
 import { ToastProvider } from "@/components/ui/ToastProvider";
-import styles from "./layout.module.css";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -22,19 +20,11 @@ export default function RootLayout({ children }) {
       className={`${geistSans.variable} h-full antialiased`}
     >
       <body>
-        <div className={styles.shell}>
-          {/* Sidebar fixa à esquerda */}
-          <Sidebar />
-          {/* Conteúdo principal */}
-          <div className={styles.content}>
-            <Header />
-            <main className={styles.main}>
-              <ToastProvider>
-                {children}
-              </ToastProvider>
-            </main>
-          </div>
-        </div>
+        <ShellLayout>
+          <ToastProvider>
+            {children}
+          </ToastProvider>
+        </ShellLayout>
       </body>
     </html>
   );

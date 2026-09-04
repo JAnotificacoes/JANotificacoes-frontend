@@ -22,7 +22,6 @@ export default function SettingsPage() {
   } = useSettings();
 
   const [draft, setDraft] = useState("");
-
   const { toast } = useToast();
 
   const [qrcode, setQrcode] = useState(null);
@@ -46,7 +45,6 @@ export default function SettingsPage() {
     }
   }, [toast]);
 
-  // Sincroniza o draft quando o template carrega do banco
   useEffect(() => {
     if (template) setDraft(template);
   }, [template]);
@@ -71,21 +69,21 @@ export default function SettingsPage() {
   }, []);
 
   useEffect(() => {
-  const check = async () => {
-    try {
-      const data = await fetchWhatsAppStatus();
-      const isConnected = data?.whatsapp?.state === "open";
-      setConnected(isConnected);
-      if (!isConnected) setQrcode(null);
-    } catch {
-      setConnected(false);
-    }
-  };
+    const check = async () => {
+      try {
+        const data = await fetchWhatsAppStatus();
+        const isConnected = data?.whatsapp?.state === "open";
+        setConnected(isConnected);
+        if (!isConnected) setQrcode(null);
+      } catch {
+        setConnected(false);
+      }
+    };
 
-  check();
-  const interval = setInterval(check, 15000);
-  return () => clearInterval(interval);
-}, []);
+    check();
+    const interval = setInterval(check, 15000);
+    return () => clearInterval(interval);
+  }, []);
 
   const isDirty = draft !== template;
 
@@ -200,6 +198,7 @@ export default function SettingsPage() {
             )}
           </div>
         </section>
+
         <ConfirmDialog
           open={showDisconnectModal}
           title="Desconectar WhatsApp"

@@ -44,6 +44,16 @@ export function ToastProvider({ children }) {
 
 export function useToast() {
   const ctx = useContext(ToastContext);
-  if (!ctx) throw new Error("useToast must be used within ToastProvider");
+  if (!ctx) {
+    // Return no-op functions during SSR/build when ToastProvider is not available
+    const noop = () => {};
+    return {
+      toast: Object.assign(noop, {
+        success: noop,
+        error: noop,
+        info: noop,
+      }),
+    };
+  }
   return ctx;
 }
