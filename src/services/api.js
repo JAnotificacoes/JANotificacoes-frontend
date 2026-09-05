@@ -1,20 +1,20 @@
-// Base URL do backend: via env (build-time no Next.js).
-// dev: http://localhost:8000 | prod (Vercel): https://janotifica-api.onrender.com
-// O fallback localhost existe só para dev — em produção sem a env, as
-// chamadas falham; o erro abaixo deixa isso explícito no console.
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-
-if (
-  !process.env.NEXT_PUBLIC_API_URL &&
-  typeof window !== "undefined" &&
-  window.location.hostname !== "localhost" &&
-  window.location.hostname !== "127.0.0.1"
-) {
-  console.error(
-    "[JANotifica] NEXT_PUBLIC_API_URL não definida — chamadas à API vão mirar localhost e falhar. " +
-      "Configure a env no deploy (Vercel) e faça rebuild."
-  );
+// Base URL do backend.
+// - Se NEXT_PUBLIC_API_URL estiver definida, ela vence (dev local ou direto).
+// - No browser em produção: same-origin "/api" (rewrite do Next -> Render),
+//   para o cookie de sessão ser first-party (ver next.config.mjs).
+// - No servidor (SSR): vai direto ao upstream via API_UPSTREAM_URL.
+// - Dev local sem env: http://localhost:8000 (direto, sem rewrite).
+function resolveApiUrl() {
+  if (process.env.NEXT_PUBLIC_API_URL) return process.env.NEXT_PUBLIC_API_URL;
+  if (typeof window === "undefined") {
+    return (process.env.API_UPSTREAM_URL || "http://localhost:8000").replace(/\/+$/, "");
+  }
+  const host = window.location.hostname;
+  if (host === "localhost" || host === "127.0.0.1") return "http://localhost:8000";
+  return "/api";
 }
+
+const API_URL = resolveApiUrl();
 
 const AUTH_PATHS = ["/login", "/auth/register", "/auth/change-password"];
 
