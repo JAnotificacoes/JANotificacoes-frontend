@@ -84,6 +84,48 @@
   cursor: not-allowed;
 }
 
+.passwordWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.passwordInput {
+  width: 100%;
+  padding-right: 42px;
+}
+
+.eyeButton {
+  position: absolute;
+  right: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.eyeButton:hover:not(:disabled) {
+  color: var(--text);
+  background: var(--primary-soft);
+}
+
+.eyeButton:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+}
+
+.eyeButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .error {
   margin: 0;
   padding: 10px 12px;
