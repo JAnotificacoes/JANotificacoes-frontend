@@ -12,6 +12,20 @@ const nextConfig = {
     const upstream = (process.env.API_UPSTREAM_URL || "http://localhost:8000").replace(/\/+$/, "");
     return [{ source: "/api/:path*", destination: `${upstream}/:path*` }];
   },
+  // Headers de segurança básicos (sem CSP restritiva: o Next precisa de
+  // inline scripts; CSP quebraria o build sem nonces).
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "X-Frame-Options", value: "DENY" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;
