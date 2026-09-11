@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useSettings } from "@/hooks/useSettings";
 import { useToast } from "@/components/ui/ToastProvider";
-import { fetchQrCode, fetchWhatsAppStatus, disconnectWhatsApp } from "@/services/api";
+import { fetchQrCode, disconnectWhatsApp } from "@/services/api";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import styles from "./settings.module.css";
 
@@ -68,22 +68,14 @@ export default function SettingsPage() {
     }
   }, []);
 
+  // Deriva o estado de conexão do poll único do useSettings (30s):
+  // antes havia um segundo poller próprio de 15s batendo no mesmo
+  // /settings/status e dobrando a pressão sobre o pool do banco.
   useEffect(() => {
-    const check = async () => {
-      try {
-        const data = await fetchWhatsAppStatus();
-        const isConnected = data?.whatsapp?.state === "open";
-        setConnected(isConnected);
-        if (!isConnected) setQrcode(null);
-      } catch {
-        setConnected(false);
-      }
-    };
-
-    check();
-    const interval = setInterval(check, 15000);
-    return () => clearInterval(interval);
-  }, []);
+    const isConnected = status?.whatsapp?.state === "open";
+    setConnected(!!isConnected);
+    if (!isConnected) setQrcode(null);
+  }, [status]);
 
   const isDirty = draft !== template;
 
