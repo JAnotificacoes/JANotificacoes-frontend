@@ -33,5 +33,5 @@ export function useDashboard() {
     }
   }, [reload, toast]);
 
-  return { data, loading, error, scanning, scan: scanAndCancel, notify, reload, page, setPage };
+  return { data, loading, error, scanning, scan: scanAndCancel, notify, page, setPage };
 }

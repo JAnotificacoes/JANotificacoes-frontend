@@ -55,6 +55,6 @@ export function useSettings() {
   return {
     status, loading, error,
     template, saving,
-    updateTemplate, reload: loadStatus,
+    updateTemplate,
   };
 }

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { changePassword, me } from "@/services/api";
+import { changePassword } from "@/services/api";
 import { useToast } from "@/components/ui/ToastProvider";
 import styles from "./changePassword.module.css";
 

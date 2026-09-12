@@ -218,11 +218,6 @@ export async function fetchQrCode() {
   return handleResponse(res);
 }
 
-export async function fetchWhatsAppStatus() {
-  const res = await fetch(`${API_URL}/settings/status`, defaultOptions);
-  return handleResponse(res);
-}
-
 export async function disconnectWhatsApp() {
   const res = await fetch(`${API_URL}/settings/whatsapp/disconnect`, {
     ...defaultOptions,
