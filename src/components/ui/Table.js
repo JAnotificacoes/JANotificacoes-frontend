@@ -3,12 +3,12 @@ import styles from "./table.module.css";
 const SKELETON_ROWS = 5;
 const SKELETON_COLUMNS = 6;
 
-function SkeletonRow() {
+function SkeletonRow({ rowIndex = 0 }) {
   return (
     <tr className={styles.tr}>
       {Array.from({ length: SKELETON_COLUMNS }).map((_, i) => (
         <td key={i} className={styles.td}>
-          <div className={styles.skeleton} style={{ width: `${40 + Math.random() * 40}%` }} />
+          <div className={styles.skeleton} style={{ width: `${40 + ((rowIndex * 7 + i * 13) % 40)}%` }} />
         </td>
       ))}
     </tr>
@@ -29,7 +29,7 @@ export function Table({ columns, data, loading, empty = "Nenhum registro encontr
           </thead>
           <tbody>
             {Array.from({ length: SKELETON_ROWS }).map((_, i) => (
-              <SkeletonRow key={i} />
+              <SkeletonRow key={i} rowIndex={i} />
             ))}
           </tbody>
         </table>
