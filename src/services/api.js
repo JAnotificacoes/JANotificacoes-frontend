@@ -174,6 +174,15 @@ export async function sendManualNotification(absenceId) {
   return handleResponse(res);
 }
 
+export async function sendBatchNotifications(absenceIds) {
+  const res = await fetch(`${API_URL}/absences/notify-batch`, {
+    ...defaultOptions,
+    method: "POST",
+    body: JSON.stringify({ absence_ids: absenceIds }),
+  });
+  return handleResponse(res);
+}
+
 // ── ESTUDANTES ──
 
 export async function searchStudents(q) {

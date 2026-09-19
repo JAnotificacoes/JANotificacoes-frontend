@@ -50,6 +50,125 @@
   color: var(--text-soft);
 }
 
+.batchBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+}
+
+.batchInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.batchCount {
+  font-size: 0.813rem;
+  color: var(--text-soft);
+}
+
+.clearButton {
+  font-size: 0.75rem;
+  color: var(--text-soft);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 0.375rem;
+  padding: 0.25rem 0.625rem;
+  cursor: pointer;
+}
+
+.clearButton:hover:not(:disabled) {
+  color: var(--text);
+  background-color: var(--surface-soft);
+}
+
+.clearButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.batchButton {
+  padding: 0.625rem 1.25rem;
+  background-color: var(--success, #16a34a);
+  color: #ffffff;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: filter 0.15s, transform 0.1s;
+}
+
+.batchButton:hover:not(:disabled) {
+  filter: brightness(0.92);
+  transform: translateY(-1px);
+}
+
+.batchButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.progressCard {
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.progressHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  font-size: 0.813rem;
+  color: var(--text);
+}
+
+.progressTrack {
+  height: 8px;
+  border-radius: 999px;
+  background-color: var(--surface-soft, #e5e7eb);
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: 999px;
+  background-color: var(--success, #16a34a);
+  transition: width 0.2s ease;
+}
+
+.progressMeta {
+  font-size: 0.75rem;
+  color: var(--text-soft);
+}
+
+.errorCard {
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.813rem;
+  color: var(--error);
+  background-color: var(--error-soft);
+  border-radius: 0.5rem;
+}
+
+.errorList {
+  margin: 0.5rem 0 0 1.25rem;
+  padding: 0;
+}
+
 .cards {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
