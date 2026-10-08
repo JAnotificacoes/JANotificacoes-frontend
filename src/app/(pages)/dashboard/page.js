@@ -93,7 +93,7 @@ export default function DashboardPage() {
           {scanning ? "Escaneando..." : "Executar scan"}
         </button>
         <label className={styles.toolbarFilter}>
-          Tipo{" "}
+          Filtrar por tipo de falta{" "}
           <select
             aria-label="Filtrar por tipo de falta"
             value={filters.absence_type ?? ""}
