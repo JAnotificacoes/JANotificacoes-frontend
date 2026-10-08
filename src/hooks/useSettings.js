@@ -2,7 +2,10 @@ import { useState, useEffect, useCallback } from "react";
 import { fetchStatus, fetchTemplate, saveTemplate } from "@/services/api";
 import { useToast } from "@/components/ui/ToastProvider";
 
-export function useSettings() {
+export function useSettings(options = {}) {
+  // paused=true suspende o poll de 30s (ex. durante a geração do QR,
+  // para não somar um fetchInstances concorrente ao connect).
+  const { paused = false } = options;
   const [status, setStatus] = useState(null);
   const [template, setTemplate] = useState("");
   const [saving, setSaving] = useState(false);
@@ -34,10 +37,13 @@ export function useSettings() {
   useEffect(() => {
     loadStatus();
     loadTemplate();
+  }, [loadStatus, loadTemplate]);
 
+  useEffect(() => {
+    if (paused) return;
     const interval = setInterval(loadStatus, 30000);
     return () => clearInterval(interval);
-  }, [loadStatus, loadTemplate]);
+  }, [paused, loadStatus]);
 
   const updateTemplate = useCallback(async (newTemplate) => {
     try {

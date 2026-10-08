@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useSettings } from "@/hooks/useSettings";
 import { useToast } from "@/components/ui/ToastProvider";
-import { fetchQrCode, disconnectWhatsApp } from "@/services/api";
+import { fetchQrCode, createWhatsAppInstance, disconnectWhatsApp, me } from "@/services/api";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import styles from "./settings.module.css";
 
@@ -14,21 +14,59 @@ const VARIABLES = [
   { key: "{date}", label: "Data da falta" },
 ];
 
+// GET qrcode é só leitura: se a instância não existir (404), cria uma
+// única vez via POST e tenta o GET de novo. Mantém o UX de 1 clique
+// para o admin sem devolver efeito colateral ao GET em loop.
+async function fetchQrCodeWithCreateFallback() {
+  try {
+    return await fetchQrCode();
+  } catch (err) {
+    if (err.status === 404) {
+      await createWhatsAppInstance();
+      return await fetchQrCode();
+    }
+    throw err;
+  }
+}
+
 export default function SettingsPage() {
-  const {
-    status, loading, error,
-    template, saving,
-    updateTemplate,
-  } = useSettings();
-
-  const [draft, setDraft] = useState("");
-  const { toast } = useToast();
-
   const [qrcode, setQrcode] = useState(null);
   const [qrLoading, setQrLoading] = useState(false);
   const [connected, setConnected] = useState(false);
   const [disconnecting, setDisconnecting] = useState(false);
   const [showDisconnectModal, setShowDisconnectModal] = useState(false);
+  // Cooldown visível após 429 (segundos restantes). Evita zerar o
+  // cooldown do WhatsApp com novos cliques.
+  const [cooldown, setCooldown] = useState(0);
+  // Trava síncrona anti-duplo-clique: state é assíncrono e dois cliques
+  // rápidos passariam pelo `qrLoading` antes dele atualizar.
+  const isFetchingRef = useRef(false);
+
+  // Pausa o poll de /settings/status durante a geração do QR para não
+  // somar um fetchInstances concorrente ao connect.
+  const {
+    status, loading, error,
+    template, saving,
+    updateTemplate,
+  } = useSettings({ paused: qrLoading });
+
+  const [draft, setDraft] = useState("");
+  const { toast } = useToast();
+
+  // Papel do usuário logado (padrão users/page.js): QR e edição de
+  // template são admin-only no backend; a UI oculta essas ações para
+  // não-admins em vez de deixar estourar 403 no clique.
+  const [currentUser, setCurrentUser] = useState(null);
+  useEffect(() => {
+    let cancelled = false;
+    me().then((u) => {
+      if (!cancelled) setCurrentUser(u);
+    }).catch(() => {
+      // 401 redireciona para /login dentro do api.js; aqui só ignora.
+    });
+    return () => { cancelled = true; };
+  }, []);
+  const isAdmin = currentUser?.is_admin === true;
 
   const handleConfirmDisconnect = useCallback(async () => {
     setShowDisconnectModal(false);
@@ -50,9 +88,13 @@ export default function SettingsPage() {
   }, [template]);
 
   const loadQrCode = useCallback(async () => {
+    // Trava dupla (ref síncrona + state): 1 clique = 1 request.
+    // Barreira de papel: o backend também exige admin (403).
+    if (!isAdmin || isFetchingRef.current || qrLoading || cooldown > 0) return;
+    isFetchingRef.current = true;
     setQrLoading(true);
     try {
-      const data = await fetchQrCode();
+      const data = await fetchQrCodeWithCreateFallback();
       if (data.connected) {
         setConnected(true);
         setQrcode(null);
@@ -60,13 +102,26 @@ export default function SettingsPage() {
         setConnected(false);
         setQrcode(data.qrcode);
       }
-    } catch {
+    } catch (err) {
       setQrcode(null);
-      toast.error("Erro ao gerar QR Code. Verifique a conexão com a Evolution API.");
+      // Detalhe amigável do backend (429/404/502 já vêm legíveis);
+      // genérico só como último recurso.
+      toast.error(err.message || "Erro ao gerar QR Code. Verifique a conexão com a Evolution API.");
+      if (err.status === 429 || /aguarde|muitas tentativas|cooldown/i.test(err.message || "")) {
+        setCooldown(60);
+      }
     } finally {
       setQrLoading(false);
+      isFetchingRef.current = false;
     }
-  }, []);
+  }, [isAdmin, qrLoading, cooldown, toast]);
+
+  // Contagem regressiva do cooldown.
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const t = setTimeout(() => setCooldown((c) => c - 1), 1000);
+    return () => clearTimeout(t);
+  }, [cooldown]);
 
   // Deriva o estado de conexão do poll único do useSettings (30s):
   // antes havia um segundo poller próprio de 15s batendo no mesmo
@@ -124,16 +179,18 @@ export default function SettingsPage() {
             ))}
           </div>
 
-          {/* Editor */}
+          {/* Editor (somente admin; demais só visualizam o status acima) */}
           <textarea
             className={styles.textarea}
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             rows={10}
             spellCheck={false}
+            readOnly={!isAdmin}
           />
 
-          {/* Ações */}
+          {/* Ações (somente admin) */}
+          {isAdmin && (
           <div className={styles.actions}>
             <button
               className={styles.resetButton}
@@ -150,8 +207,10 @@ export default function SettingsPage() {
               {saving ? "Salvando..." : "Salvar template"}
             </button>
           </div>
+          )}
         </section>
-        {/*Seção QR Code */}
+        {/*Seção QR Code (somente admin) */}
+        {isAdmin && (
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>Conexão WhatsApp</h2>
           <p className={styles.sectionDesc}>
@@ -184,12 +243,21 @@ export default function SettingsPage() {
             )}
 
             {!connected && (
-              <button className={styles.qrcodeButton} onClick={loadQrCode} disabled={qrLoading}>
-                {qrLoading ? "Carregando..." : qrcode ? "Atualizar QR Code" : "Gerar QR Code"}
+              <button
+                className={styles.qrcodeButton}
+                onClick={loadQrCode}
+                disabled={qrLoading || cooldown > 0}
+              >
+                {qrLoading
+                  ? "Carregando..."
+                  : cooldown > 0
+                    ? `Aguarde ${cooldown}s`
+                    : qrcode ? "Atualizar QR Code" : "Gerar QR Code"}
               </button>
             )}
           </div>
         </section>
+        )}
 
         <ConfirmDialog
           open={showDisconnectModal}

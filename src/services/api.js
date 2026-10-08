@@ -49,7 +49,11 @@ async function handleResponse(res) {
   }
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
-    throw new Error(err.detail || `Erro ${res.status}`);
+    const error = new Error(err.detail || `Erro ${res.status}`);
+    // Status preservado para o chamador decidir (ex. 404 → criar
+    // instância uma única vez; 429 → cooldown visível).
+    error.status = res.status;
+    throw error;
   }
   if (res.status === 204) return null;
   return res.json();
@@ -224,6 +228,14 @@ export async function saveTemplate(template) {
 
 export async function fetchQrCode() {
   const res = await fetch(`${API_URL}/settings/whatsapp/qrcode`, defaultOptions);
+  return handleResponse(res);
+}
+
+export async function createWhatsAppInstance() {
+  const res = await fetch(`${API_URL}/settings/whatsapp/instance`, {
+    ...defaultOptions,
+    method: "POST",
+  });
   return handleResponse(res);
 }
 
