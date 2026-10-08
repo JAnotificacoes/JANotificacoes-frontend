@@ -14,6 +14,29 @@ const VARIABLES = [
   { key: "{date}", label: "Data da falta" },
 ];
 
+// Cooldown compartilhado entre reloads e abas do mesmo navegador: o
+// carimbo real continua no servidor; isto só espelha para a UI não
+// "furar" a trava ao recarregar a página.
+const QR_COOLDOWN_KEY = "janotifica:qr-cooldown-until";
+
+function readSharedCooldown() {
+  try {
+    const until = Number(localStorage.getItem(QR_COOLDOWN_KEY) || 0);
+    const remaining = Math.ceil((until - Date.now()) / 1000);
+    return remaining > 0 ? remaining : 0;
+  } catch {
+    return 0;
+  }
+}
+
+function writeSharedCooldown(seconds) {
+  try {
+    localStorage.setItem(QR_COOLDOWN_KEY, String(Date.now() + seconds * 1000));
+  } catch {
+    // storage indisponível (modo privado): segue só com o state local.
+  }
+}
+
 // GET qrcode é só leitura: se a instância não existir (404), cria uma
 // única vez via POST e tenta o GET de novo. Mantém o UX de 1 clique
 // para o admin sem devolver efeito colateral ao GET em loop.
@@ -68,6 +91,12 @@ export default function SettingsPage() {
   }, []);
   const isAdmin = currentUser?.is_admin === true;
 
+  // Reconstrói o countdown após reload: sem isso o reload zerava a UI
+  // mas o carimbo no servidor continuava valendo (429 "no primeiro clique").
+  useEffect(() => {
+    setCooldown(readSharedCooldown());
+  }, []);
+
   const handleConfirmDisconnect = useCallback(async () => {
     setShowDisconnectModal(false);
     setDisconnecting(true);
@@ -107,8 +136,15 @@ export default function SettingsPage() {
       // Detalhe amigável do backend (429/404/502 já vêm legíveis);
       // genérico só como último recurso.
       toast.error(err.message || "Erro ao gerar QR Code. Verifique a conexão com a Evolution API.");
-      if (err.status === 429 || /aguarde|muitas tentativas|cooldown/i.test(err.message || "")) {
-        setCooldown(60);
+      // Retry-After do servidor quando houver (throttle real do Evo dura
+      // minutos); senão, trava local curta anti-duplo-clique.
+      const isRateLimited =
+        err.status === 429 || /aguarde|muitas tentativas|cooldown/i.test(err.message || "");
+      if (isRateLimited) {
+        const seconds =
+          Number.isFinite(err.retryAfter) && err.retryAfter > 0 ? Math.ceil(err.retryAfter) : 60;
+        writeSharedCooldown(seconds);
+        setCooldown(seconds);
       }
     } finally {
       setQrLoading(false);

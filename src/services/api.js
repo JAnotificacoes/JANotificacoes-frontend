@@ -53,6 +53,12 @@ async function handleResponse(res) {
     // Status preservado para o chamador decidir (ex. 404 → criar
     // instância uma única vez; 429 → cooldown visível).
     error.status = res.status;
+    // Retry-After (segundos) que o backend envia nos 429: permite ao
+    // frontend reconstruir o countdown mesmo após reload.
+    const retryAfter = Number(res.headers?.get?.("Retry-After"));
+    if (Number.isFinite(retryAfter) && retryAfter > 0) {
+      error.retryAfter = retryAfter;
+    }
     throw error;
   }
   if (res.status === 204) return null;

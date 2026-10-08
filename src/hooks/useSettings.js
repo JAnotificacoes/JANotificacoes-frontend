@@ -2,10 +2,17 @@ import { useState, useEffect, useCallback } from "react";
 import { fetchStatus, fetchTemplate, saveTemplate } from "@/services/api";
 import { useToast } from "@/components/ui/ToastProvider";
 
+// Poll espaçado: cada poll é 1 fetchInstances no Evo (plano gratuito com
+// throttle agressivo). 30s + N abas gerou os 429 de 08/10/2026.
+const STATUS_POLL_MS = 60000;
+
 export function useSettings(options = {}) {
-  // paused=true suspende o poll de 30s (ex. durante a geração do QR,
+  // paused=true suspende o poll de status (ex. durante a geração do QR,
   // para não somar um fetchInstances concorrente ao connect).
   const { paused = false } = options;
+  const [visible, setVisible] = useState(
+    typeof document === "undefined" ? true : !document.hidden
+  );
   const [status, setStatus] = useState(null);
   const [template, setTemplate] = useState("");
   const [saving, setSaving] = useState(false);
@@ -39,11 +46,20 @@ export function useSettings(options = {}) {
     loadTemplate();
   }, [loadStatus, loadTemplate]);
 
+  // Aba oculta não polla: segunda aba em segundo plano não deve custar
+  // chamadas ao Evo.
   useEffect(() => {
-    if (paused) return;
-    const interval = setInterval(loadStatus, 30000);
+    if (typeof document === "undefined") return;
+    const onVisibility = () => setVisible(!document.hidden);
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => document.removeEventListener("visibilitychange", onVisibility);
+  }, []);
+
+  useEffect(() => {
+    if (paused || !visible) return;
+    const interval = setInterval(loadStatus, STATUS_POLL_MS);
     return () => clearInterval(interval);
-  }, [paused, loadStatus]);
+  }, [paused, visible, loadStatus]);
 
   const updateTemplate = useCallback(async (newTemplate) => {
     try {
