@@ -96,6 +96,11 @@ export default function HistoryPage() {
     { key: "full_classroom", label: "Turma" },
     { key: "date", label: "Data da falta" },
     {
+      key: "absence_type",
+      label: "Tipo",
+      render: (row) => <Badge status={`type-${row.absence_type ?? "F"}`} />,
+    },
+    {
       key: "status",
       label: "Notificação",
       render: (row) => <Badge status={row.status} />,
@@ -178,6 +183,20 @@ export default function HistoryPage() {
               <option value="sent">Enviada</option>
               <option value="error">Erro</option>
               <option value="pending">Pendente</option>
+            </select>
+          </div>
+
+          <div className={styles.filterGroup}>
+            <label className={styles.label}>Tipo</label>
+            <select
+              className={styles.select}
+              value={filters.absence_type}
+              onChange={(e) => updateFilter("absence_type", e.target.value)}
+            >
+              <option value="">Todos</option>
+              <option value="F">Falta</option>
+              <option value="FA">Falta c/ atestado</option>
+              <option value="S">Suspenso</option>
             </select>
           </div>
 

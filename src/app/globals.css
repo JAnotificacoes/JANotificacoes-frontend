@@ -66,6 +66,9 @@ body {
     --accent: #c47a3a;
     --accent-soft: #faf0e6;
 
+    --purple: #7c3aed;
+    --purple-soft: #f0e8fb;
+
     --shadow-sm: 0 1px 3px rgba(44, 40, 34, 0.06);
     --shadow-md: 0 4px 12px rgba(44, 40, 34, 0.08);
     --shadow-lg: 0 8px 24px rgba(44, 40, 34, 0.1);
@@ -97,6 +100,9 @@ body {
 
     --accent: #d48a4a;
     --accent-soft: #2a1e14;
+
+    --purple: #a78bfa;
+    --purple-soft: #251b3d;
 
     --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
     --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);

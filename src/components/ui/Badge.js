@@ -13,11 +13,13 @@ export function Badge({ status }) {
     sent: styles.sent, error: styles.error, pending: styles.pending,
     online: styles.online, offline: styles.offline,
     automatic: styles.automatic, manual: styles.manual,
+    "type-F": styles.typeF, "type-FA": styles.typeFA, "type-S": styles.typeS,
   };
   const labels = {
     sent: "Enviada", error: "Erro", pending: "Pendente",
     online: "Online", offline: "Offline",
     automatic: "Automática", manual: "Manual",
+    "type-F": "Falta", "type-FA": "Falta c/ atestado", "type-S": "Suspenso",
   };
   const style = variants[status] || styles.default;
   const label = labels[status] || status;

@@ -8,6 +8,7 @@ const initialFilters = {
   classroom: "",
   status: "",
   student_name: "",
+  absence_type: "",
 };
 
 export function useHistory() {

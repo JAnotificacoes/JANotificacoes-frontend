@@ -10,6 +10,7 @@ import styles from "./dashboard.module.css";
 export default function DashboardPage() {
   const {
     data, loading, error, scanning, scan, notify, page, setPage,
+    filters, updateFilter,
     selectedIds, selectedCount, isSelected, toggleOne, togglePage, clearSelection,
     batchSending, batchProgress, batchErrors, notifyBatch, cancelBatch,
   } = useDashboard();
@@ -33,13 +34,14 @@ export default function DashboardPage() {
       ),
       render: (row) => {
         const eligible = isBatchEligible(row);
+        const isNotF = (row.absence_type ?? "F") !== "F";
         return (
           <input
             type="checkbox"
             aria-label={`Selecionar ${row.student_name}`}
             checked={isSelected(row.absence_id)}
             disabled={!eligible || batchSending}
-            title={eligible ? "Selecionar para envio em lote" : "Já enviada — sem reenvio"}
+            title={isNotF ? "Somente faltas simples (F) participam do lote" : eligible ? "Selecionar para envio em lote" : "Já enviada — sem reenvio"}
             onChange={() => toggleOne(row)}
           />
         );
@@ -49,6 +51,11 @@ export default function DashboardPage() {
     { key: "full_classroom", label: "Turma" },
     { key: "guardian_name", label: "Responsável" },
     {
+      key: "absence_type",
+      label: "Tipo",
+      render: (row) => <Badge status={`type-${row.absence_type ?? "F"}`} />,
+    },
+    {
       key: "notification_status",
       label: "Notificação",
       render: (row) => <Badge status={row.notification_status} />,
@@ -57,11 +64,19 @@ export default function DashboardPage() {
     {
       key: "action",
       label: "Notificar",
-      render: (row) => (
-        <button onClick={() => notify(row.absence_id)} className={styles.actionButton} disabled={batchSending}>
-          Notificar
-        </button>
-      ),
+      render: (row) => {
+        // Só faltas simples (F) são notificáveis; FA/S mostram detalhe.
+        if ((row.absence_type ?? "F") !== "F") {
+          return (
+            <span title="Somente faltas simples (F) são notificadas">—</span>
+          );
+        }
+        return (
+          <button onClick={() => notify(row.absence_id)} className={styles.actionButton} disabled={batchSending}>
+            Notificar
+          </button>
+        );
+      },
     },
   ];
 
@@ -77,6 +92,20 @@ export default function DashboardPage() {
         <button onClick={scan} disabled={scanning || batchSending} className={styles.scanButton}>
           {scanning ? "Escaneando..." : "Executar scan"}
         </button>
+        <label className={styles.toolbarFilter}>
+          Tipo{" "}
+          <select
+            aria-label="Filtrar por tipo de falta"
+            value={filters.absence_type ?? ""}
+            onChange={(e) => updateFilter("absence_type", e.target.value || "")}
+            disabled={batchSending}
+          >
+            <option value="">Todas</option>
+            <option value="F">Falta</option>
+            <option value="FA">Falta c/ atestado</option>
+            <option value="S">Suspenso</option>
+          </select>
+        </label>
         <span className={styles.toolbarCount}>
           {data?.total ?? "—"} falta{data?.total !== 1 ? "s" : ""} hoje
         </span>
@@ -91,7 +120,7 @@ export default function DashboardPage() {
       <div className={styles.batchBar}>
         <div className={styles.batchInfo}>
           <span className={styles.batchCount}>
-            {selectedCount} selecionado{selectedCount !== 1 ? "s" : ""} (pendentes + erros, vale entre páginas)
+            {selectedCount} selecionado{selectedCount !== 1 ? "s" : ""} (faltas F pendentes + erros, vale entre páginas)
           </span>
           {selectedCount > 0 && (
             <button onClick={clearSelection} disabled={batchSending} className={styles.clearButton}>
@@ -192,7 +221,7 @@ export default function DashboardPage() {
       <ConfirmDialog
         open={confirmOpen}
         title="Enviar notificações em lote"
-        message={`Enviar a mensagem do template salvo para ${selectedCount} responsável(eis) selecionado(s)? Somente pendentes e erros serão processados; já enviadas são ignoradas.`}
+        message={`Enviar a mensagem do template salvo para ${selectedCount} responsável(eis) selecionado(s)? Somente faltas simples (F) pendentes e com erro serão processadas; atestados, suspensos e já enviadas são ignorados.`}
         confirmLabel="Enviar notificação"
         onConfirm={() => {
           setConfirmOpen(false);

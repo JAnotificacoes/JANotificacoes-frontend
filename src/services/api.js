@@ -143,6 +143,7 @@ export async function fetchTodayAbsences(params = {}) {
   const query = new URLSearchParams({
     page: params.page || 1,
     page_size: params.page_size || 20,
+    ...(params.absence_type ? { absence_type: params.absence_type } : {}),
   }).toString();
 
   const res = await fetch(`${API_URL}/absences/today?${query}`, defaultOptions);

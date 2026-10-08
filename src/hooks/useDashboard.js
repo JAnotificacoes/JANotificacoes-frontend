@@ -6,12 +6,15 @@ import { fetchTodayAbsences, triggerScan, triggerCancel, sendManualNotification,
 const BATCH_CHUNK_SIZE = 10;
 
 export function isBatchEligible(row) {
+  // Só faltas simples (F) pendentes/com erro participam de envios.
+  // FA (atestado) e S (suspenso) são só visualização.
+  if ((row?.absence_type ?? "F") !== "F") return false;
   return row?.notification_status === "pending" || row?.notification_status === "error";
 }
 
 export function useDashboard() {
 
-  const { data, loading, error, reload, page, setPage } = usePaginated(fetchTodayAbsences);
+  const { data, loading, error, reload, page, setPage, filters, updateFilter } = usePaginated(fetchTodayAbsences);
   const [scanning, setScanning] = useState(false);
   const [selectedIds, setSelectedIds] = useState([]);
   const [selectedMeta, setSelectedMeta] = useState({});
@@ -187,6 +190,7 @@ export function useDashboard() {
 
   return {
     data, loading, error, scanning, scan: scanAndCancel, notify, page, setPage,
+    filters, updateFilter,
     selectedIds, selectedMeta, selectedCount: selectedIds.length,
     isSelected, toggleOne, togglePage, clearSelection,
     batchSending, batchProgress, batchErrors, notifyBatch, cancelBatch,

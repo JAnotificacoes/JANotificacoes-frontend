@@ -50,6 +50,29 @@
   color: var(--text-soft);
 }
 
+.toolbarFilter {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--text-soft);
+}
+
+.toolbarFilter select {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  color: var(--text);
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+.toolbarFilter select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .batchBar {
   display: flex;
   align-items: center;

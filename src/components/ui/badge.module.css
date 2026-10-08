@@ -16,4 +16,8 @@
 .offline { background-color: var(--error-soft); color: var(--error); }
 .automatic { background-color: var(--primary-soft); color: var(--primary); }
 .manual { background-color: var(--accent-soft); color: var(--accent); }
+/* Tipo da falta: F (falta), FA (atestado), S (suspenso, roxo). */
+.typeF { background-color: var(--error-soft); color: var(--error); }
+.typeFA { background-color: var(--pending-soft); color: var(--pending); }
+.typeS { background-color: var(--purple-soft); color: var(--purple); }
 .default { background-color: var(--surface-soft); color: var(--text-soft); }
