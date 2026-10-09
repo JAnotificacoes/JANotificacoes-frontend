@@ -14,6 +14,12 @@ const VARIABLES = [
   { key: "{date}", label: "Data da falta" },
 ];
 
+// Gate de prontidão do botão QR: cold start (backend+Evo acordando) +
+// throttle herdado da hibernação matam o primeiro clique do dia. Em vez
+// de cronômetro fixo pós-login (que não cobre sessão persistente), a
+// trava ancora na montagem da página + primeiro status bem-sucedido.
+const QR_WARMUP_SECONDS = 60;
+
 // Cooldown compartilhado entre reloads e abas do mesmo navegador: o
 // carimbo real continua no servidor; isto só espelha para a UI não
 // "furar" a trava ao recarregar a página.
@@ -35,6 +41,16 @@ function writeSharedCooldown(seconds) {
   } catch {
     // storage indisponível (modo privado): segue só com o state local.
   }
+}
+
+// Countdown legível: até 59s mostra segundos; acima, XminYs
+// (ex. 138s → "2min18s").
+function formatCountdown(totalSeconds) {
+  const s = Math.max(0, Math.ceil(totalSeconds));
+  if (s <= 59) return `${s}s`;
+  const m = Math.floor(s / 60);
+  const rest = String(s % 60).padStart(2, "0");
+  return `${m}min${rest}s`;
 }
 
 // GET qrcode é só leitura: se a instância não existir (404), cria uma
@@ -64,6 +80,10 @@ export default function SettingsPage() {
   // Trava síncrona anti-duplo-clique: state é assíncrono e dois cliques
   // rápidos passariam pelo `qrLoading` antes dele atualizar.
   const isFetchingRef = useRef(false);
+  // Âncora do warmup: montagem da página (cobre login fresco e sessão
+  // persistente, que pula o login).
+  const mountedAtRef = useRef(Date.now());
+  const [warmElapsed, setWarmElapsed] = useState(0);
 
   // Pausa o poll de /settings/status durante a geração do QR para não
   // somar um fetchInstances concorrente ao connect.
@@ -116,10 +136,24 @@ export default function SettingsPage() {
     if (template) setDraft(template);
   }, [template]);
 
+  // Ticker do warmup: só avança enquanto a trava está ativa.
+  const warmRemaining = Math.max(
+    0,
+    QR_WARMUP_SECONDS - Math.max(warmElapsed, Math.floor((Date.now() - mountedAtRef.current) / 1000))
+  );
+  const warming = warmRemaining > 0;
+  useEffect(() => {
+    if (!warming) return;
+    const t = setTimeout(() => setWarmElapsed((e) => e + 1), 1000);
+    return () => clearTimeout(t);
+  }, [warming, warmElapsed]);
+
   const loadQrCode = useCallback(async () => {
     // Trava dupla (ref síncrona + state): 1 clique = 1 request.
     // Barreira de papel: o backend também exige admin (403).
+    // Gate de prontidão: sem status ainda ou em warmup, nem tenta.
     if (!isAdmin || isFetchingRef.current || qrLoading || cooldown > 0) return;
+    if (Date.now() - mountedAtRef.current < QR_WARMUP_SECONDS * 1000 || !status) return;
     isFetchingRef.current = true;
     setQrLoading(true);
     try {
@@ -133,13 +167,18 @@ export default function SettingsPage() {
       }
     } catch (err) {
       setQrcode(null);
-      // Detalhe amigável do backend (429/404/502 já vêm legíveis);
-      // genérico só como último recurso.
-      toast.error(err.message || "Erro ao gerar QR Code. Verifique a conexão com a Evolution API.");
-      // Retry-After do servidor quando houver (throttle real do Evo dura
-      // minutos); senão, trava local curta anti-duplo-clique.
+      // Operador final recebe texto instrucional curto; detalhe técnico
+      // vai ao console para o suporte (timestamp cruza com os logs).
       const isRateLimited =
         err.status === 429 || /aguarde|muitas tentativas|cooldown/i.test(err.message || "");
+      if (isRateLimited) {
+        toast.error("WhatsApp em espera. Aguarde o contador zerar e tente uma única vez.");
+        console.warn("[QR] cooldown técnico:", err.message || err);
+      } else {
+        toast.error(err.message || "Erro ao gerar QR Code. Verifique a conexão com a Evolution API.");
+      }
+      // Retry-After do servidor quando houver (throttle real do Evo dura
+      // minutos); senão, trava local curta anti-duplo-clique.
       if (isRateLimited) {
         const seconds =
           Number.isFinite(err.retryAfter) && err.retryAfter > 0 ? Math.ceil(err.retryAfter) : 60;
@@ -150,7 +189,7 @@ export default function SettingsPage() {
       setQrLoading(false);
       isFetchingRef.current = false;
     }
-  }, [isAdmin, qrLoading, cooldown, toast]);
+  }, [isAdmin, qrLoading, cooldown, status, toast]);
 
   // Contagem regressiva do cooldown.
   useEffect(() => {
@@ -282,13 +321,20 @@ export default function SettingsPage() {
               <button
                 className={styles.qrcodeButton}
                 onClick={loadQrCode}
-                disabled={qrLoading || cooldown > 0}
+                disabled={qrLoading || cooldown > 0 || warming || !status}
+                title={
+                  warming || !status
+                    ? "Aguarde o serviço do WhatsApp acordar antes de gerar o QR"
+                    : undefined
+                }
               >
                 {qrLoading
                   ? "Carregando..."
                   : cooldown > 0
-                    ? `Aguarde ${cooldown}s`
-                    : qrcode ? "Atualizar QR Code" : "Gerar QR Code"}
+                    ? `Aguarde ${formatCountdown(cooldown)}`
+                    : warming || !status
+                      ? (!status ? "Verificando WhatsApp…" : `Aguarde ${formatCountdown(warmRemaining)}…`)
+                      : qrcode ? "Atualizar QR Code" : "Gerar QR Code"}
               </button>
             )}
           </div>
