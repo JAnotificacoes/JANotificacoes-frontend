@@ -86,7 +86,7 @@ export default function AboutPage() {
                 <div className={styles.tags}>
                     {[
                         "Python", "FastAPI", "PostgreSQL", "SQLAlchemy",
-                        "Google Sheets API", "Evolution API", "WhatsApp",
+                        "Google Sheets API", "WAHA", "WhatsApp",
                         "Docker", "Next.js",
                     ].map((tech) => (
                         <span key={tech} className={styles.tag}>{tech}</span>

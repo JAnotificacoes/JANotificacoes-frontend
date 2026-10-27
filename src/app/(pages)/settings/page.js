@@ -14,11 +14,15 @@ const VARIABLES = [
   { key: "{date}", label: "Data da falta" },
 ];
 
-// Gate de prontidão do botão QR: cold start (backend+Evo acordando) +
+// Gate de prontidão do botão QR: cold start (backend+WAHA acordando) +
 // throttle herdado da hibernação matam o primeiro clique do dia. Em vez
 // de cronômetro fixo pós-login (que não cobre sessão persistente), a
 // trava ancora na montagem da página + primeiro status bem-sucedido.
 const QR_WARMUP_SECONDS = 60;
+
+// No WAHA o QR expira em ~20s (e é reemitido). Renova sozinho enquanto
+// estiver na tela para a escola não perder tempo com QR vencido.
+const QR_AUTO_REFRESH_MS = 20000;
 
 // Cooldown compartilhado entre reloads e abas do mesmo navegador: o
 // carimbo real continua no servidor; isto só espelha para a UI não
@@ -175,9 +179,9 @@ export default function SettingsPage() {
         toast.error("WhatsApp em espera. Aguarde o contador zerar e tente uma única vez.");
         console.warn("[QR] cooldown técnico:", err.message || err);
       } else {
-        toast.error(err.message || "Erro ao gerar QR Code. Verifique a conexão com a Evolution API.");
+        toast.error(err.message || "Erro ao gerar QR Code. Verifique a conexão com o serviço de WhatsApp.");
       }
-      // Retry-After do servidor quando houver (throttle real do Evo dura
+      // Retry-After do servidor quando houver (throttle upstream dura
       // minutos); senão, trava local curta anti-duplo-clique.
       if (isRateLimited) {
         const seconds =
@@ -197,6 +201,14 @@ export default function SettingsPage() {
     const t = setTimeout(() => setCooldown((c) => c - 1), 1000);
     return () => clearTimeout(t);
   }, [cooldown]);
+
+  // QR do WAHA expira rápido: enquanto estiver visível, revalida no backend
+  // (que devolve o QR atual ou já marca connected).
+  useEffect(() => {
+    if (!qrcode || connected || qrLoading || cooldown > 0) return;
+    const t = setTimeout(() => loadQrCode(), QR_AUTO_REFRESH_MS);
+    return () => clearTimeout(t);
+  }, [qrcode, connected, qrLoading, cooldown, loadQrCode]);
 
   // Deriva o estado de conexão do poll único do useSettings (30s):
   // antes havia um segundo poller próprio de 15s batendo no mesmo

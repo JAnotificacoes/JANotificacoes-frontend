@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { fetchStatus, fetchTemplate, saveTemplate } from "@/services/api";
 import { useToast } from "@/components/ui/ToastProvider";
 
-// Poll espaçado: cada poll é 1 fetchInstances no Evo (plano gratuito com
+// Poll espaçado: cada poll é 1 consulta de sessão no WAHA (plano gratuito com
 // throttle agressivo). 30s + N abas gerou os 429 de 08/10/2026.
 const STATUS_POLL_MS = 60000;
 
@@ -47,7 +47,7 @@ export function useSettings(options = {}) {
   }, [loadStatus, loadTemplate]);
 
   // Aba oculta não polla: segunda aba em segundo plano não deve custar
-  // chamadas ao Evo.
+  // chamadas ao WAHA.
   useEffect(() => {
     if (typeof document === "undefined") return;
     const onVisibility = () => setVisible(!document.hidden);
