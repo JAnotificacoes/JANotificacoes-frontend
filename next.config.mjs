@@ -7,7 +7,7 @@ const nextConfig = {
   // assim o cookie de sessão mora no domínio do frontend e o middleware
   // (proxy.ts) e os fetchs o enxergam. Sem isso, o cookie third-party
   // (onrender.com <- vercel.app) quebra o login.
-  // build-time via API_UPSTREAM_URL (ex: https://janotifica-api.onrender.com).
+  // build-time via API_UPSTREAM_URL (ex: https://janotificacoes-backend.onrender.com).
   async rewrites() {
     const upstream = (process.env.API_UPSTREAM_URL || "http://localhost:8000").replace(/\/+$/, "");
     return [{ source: "/api/:path*", destination: `${upstream}/:path*` }];
